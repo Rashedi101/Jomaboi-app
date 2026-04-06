@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Jomaboi — Digital Savings Circles</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Nunito:wght@800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ── DESIGN TOKENS ─────────────────────────────────────────────── */
@@ -72,15 +72,7 @@ body {
   flex-shrink: 0;
   z-index: 100;
 }
-.topbar-logo { display: flex; align-items: center; gap: 10px; }
-.logo-mark {
-  width: 32px; height: 32px;
-  background: var(--hero);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--shadow-primary);
-  font-size: 16px;
-}
+.topbar-logo { display: flex; align-items: center; }
 .logo-text { font-weight: 900; font-size: 1rem; color: var(--on-surface); letter-spacing: -0.02em; }
 .accent-bar {
   height: 3px;
@@ -289,17 +281,7 @@ body {
 }
 #login-screen.hidden { display: none; }
 .login-logo { text-align: center; margin-bottom: 2rem; }
-.login-mark {
-  width: 72px; height: 72px;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; margin: 0 auto 1rem;
-  box-shadow: var(--shadow-primary);
-}
-.login-title { font-size: 2rem; font-weight: 900; color: white; letter-spacing: -0.04em; margin-bottom: 4px; }
-.login-sub { font-size: 0.72rem; color: rgba(255,255,255,0.7); letter-spacing: 0.15em; font-family: 'Manrope', sans-serif; text-transform: uppercase; }
+.login-sub { color: rgba(255,255,255,0.75); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; font-family: 'Manrope', sans-serif; text-transform: uppercase; }
 .login-card {
   background: rgba(255,255,255,0.97);
   border-radius: 20px; padding: 2rem 1.75rem;
@@ -368,9 +350,33 @@ body {
 <!-- LOGIN SCREEN -->
 <div id="login-screen">
   <div class="login-logo">
-    <div class="login-mark">🌿</div>
-    <div class="login-title">Jomaboi</div>
-    <div class="login-sub">Community Wealth Portal</div>
+    <!-- Full Jomaboi wordmark SVG — exact match to brand logo -->
+    <svg viewBox="0 0 268 68" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:220px;height:auto;filter:drop-shadow(0 4px 16px rgba(120,120,240,0.3))">
+      <!-- J -->
+      <text x="0" y="55" font-family="Nunito,sans-serif" font-weight="900" font-size="54" fill="#ffffff">J</text>
+      <!-- om -->
+      <text x="30" y="55" font-family="Nunito,sans-serif" font-weight="900" font-size="54" fill="#ffffff">om</text>
+      <!-- Orange "a" character mark -->
+      <g transform="translate(118, 4)">
+        <!-- Left antenna -->
+        <path d="M 14,20 Q 7,11 2,4" stroke="#F5A623" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <circle cx="2" cy="4" r="4.5" fill="#F5A623"/>
+        <!-- Right antenna -->
+        <path d="M 31,14 Q 38,7 44,2" stroke="#F5A623" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <circle cx="44" cy="2" r="4.5" fill="#F5A623"/>
+        <!-- Main body circle -->
+        <circle cx="22" cy="37" r="22" fill="#F5A623"/>
+        <!-- Right vertical bar (the "a" leg) -->
+        <rect x="40" y="15" width="8" height="46" rx="4" fill="#F5A623"/>
+        <!-- White inner circle (hollow eye) -->
+        <circle cx="20" cy="37" r="12" fill="rgba(255,255,255,0.25)"/>
+        <!-- Orange inner pupil -->
+        <circle cx="20" cy="37" r="6" fill="#F5A623" opacity="0.6"/>
+      </g>
+      <!-- boi -->
+      <text x="172" y="55" font-family="Nunito,sans-serif" font-weight="900" font-size="54" fill="#ffffff">boi</text>
+    </svg>
+    <div class="login-sub" style="margin-top:10px">Community Wealth Portal</div>
   </div>
   <div class="login-card">
     <div class="role-toggle">
@@ -399,8 +405,32 @@ body {
   <!-- TOP BAR -->
   <div id="topbar">
     <div class="topbar-logo">
-      <div class="logo-mark">🌿</div>
-      <span class="logo-text">Jomaboi</span>
+      <!-- Jomaboi wordmark — purple + orange on white topbar -->
+      <svg viewBox="0 0 268 68" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:28px;width:auto">
+        <!-- J -->
+        <text x="0" y="55" font-family="Nunito,sans-serif" font-weight="900" font-size="54" fill="#7878F0">J</text>
+        <!-- om -->
+        <text x="30" y="55" font-family="Nunito,sans-serif" font-weight="900" font-size="54" fill="#7878F0">om</text>
+        <!-- Orange "a" character mark -->
+        <g transform="translate(118, 4)">
+          <!-- Left antenna -->
+          <path d="M 14,20 Q 7,11 2,4" stroke="#F5A623" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <circle cx="2" cy="4" r="4.5" fill="#F5A623"/>
+          <!-- Right antenna -->
+          <path d="M 31,14 Q 38,7 44,2" stroke="#F5A623" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <circle cx="44" cy="2" r="4.5" fill="#F5A623"/>
+          <!-- Main body circle -->
+          <circle cx="22" cy="37" r="22" fill="#F5A623"/>
+          <!-- Right vertical bar (the "a" leg) -->
+          <rect x="40" y="15" width="8" height="46" rx="4" fill="#F5A623"/>
+          <!-- White inner circle (hollow eye) -->
+          <circle cx="20" cy="37" r="12" fill="white"/>
+          <!-- Orange inner pupil -->
+          <circle cx="20" cy="37" r="6" fill="#F5A623"/>
+        </g>
+        <!-- boi -->
+        <text x="172" y="55" font-family="Nunito,sans-serif" font-weight="900" font-size="54" fill="#7878F0">boi</text>
+      </svg>
     </div>
     <div id="role-chip" class="chip chip-amber">Admin</div>
   </div>
@@ -434,7 +464,7 @@ let STATE = {
 // ═══════════════════════════════════════════════════════════════
 // MOCK DATA
 // ═══════════════════════════════════════════════════════════════
-const circles = [
+let circles = [
   { id:1, name:'Mirpur Samity A', members:20, contribution:2000, current_cycle:4, total_cycles:20, pot:45250, paid:17, type:'Private', gradient:'var(--hero)' },
   { id:2, name:'Uttara Sisters Fund', members:15, contribution:5000, current_cycle:3, total_cycles:15, pot:32800, paid:15, type:'Private', gradient:'linear-gradient(135deg,#815100,#ffb554)' },
   { id:3, name:'Dhanmondi Traders', members:30, contribution:3000, current_cycle:2, total_cycles:30, pot:18400, paid:25, type:'Public', gradient:'linear-gradient(135deg,#006947,#69f6b8)' }
@@ -456,7 +486,7 @@ const transactions = [
 ];
 const savingsData = [2000,4000,6000,8000,10000,12450];
 const savingsLabels = ['Oct','Nov','Dec','Jan','Feb','Mar'];
-const ledgers = [
+let ledgers = [
   { id:1, type:'House Rent', property:'456 Green Road, Mirpur', role:'Landlord', tenant:'Karim Hossain', rent:8000, dueDay:5, deposit:16000,
     payments:[
       {month:'January',due:8000,paid:8000,date:'Jan 4',method:'Bank',status:'Paid'},
@@ -650,8 +680,59 @@ function renderAdminDash() {
         </div>`;}).join('')}
     </div>
     <div class="sfc mb-2">
-      <div class="sh"><div class="sh-title">Monthly Overview</div></div>
-      <canvas id="admin-chart" height="140"></canvas>
+      <div class="sh">
+        <div><div class="sh-label">This Month</div><div class="sh-title">Financial Overview</div></div>
+        <span class="chip chip-primary">April 2026</span>
+      </div>
+      <!-- Pie chart + legend side by side -->
+      <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1.25rem">
+        <div style="flex-shrink:0;position:relative;width:130px;height:130px">
+          <canvas id="admin-chart" width="130" height="130"></canvas>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+            <div style="font-size:0.62rem;color:var(--outline);font-family:Manrope,sans-serif;text-transform:uppercase;letter-spacing:0.06em">Total</div>
+            <div style="font-size:0.88rem;font-weight:900;color:var(--on-surface)">BDT ${fmt(totalIn+totalOut)}</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:0.75rem">
+          <div style="display:flex;align-items:center;gap:0.6rem">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--tertiary);flex-shrink:0"></div>
+            <div style="flex:1">
+              <div style="font-size:0.68rem;color:var(--outline);font-family:Manrope,sans-serif">Contributions In</div>
+              <div style="font-size:1rem;font-weight:900;color:var(--tertiary)">BDT ${fmt(totalIn)}</div>
+            </div>
+            <span class="chip chip-green">+12%</span>
+          </div>
+          <div style="height:1px;background:var(--surface-container)"></div>
+          <div style="display:flex;align-items:center;gap:0.6rem">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--secondary-dim);flex-shrink:0"></div>
+            <div style="flex:1">
+              <div style="font-size:0.68rem;color:var(--outline);font-family:Manrope,sans-serif">Payouts Out</div>
+              <div style="font-size:1rem;font-weight:900;color:var(--secondary)">BDT ${fmt(totalOut)}</div>
+            </div>
+            <span class="chip chip-amber">54%</span>
+          </div>
+          <div style="height:1px;background:var(--surface-container)"></div>
+          <div style="display:flex;align-items:center;gap:0.6rem">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--primary-container);flex-shrink:0"></div>
+            <div style="flex:1">
+              <div style="font-size:0.68rem;color:var(--outline);font-family:Manrope,sans-serif">Net Balance</div>
+              <div style="font-size:1rem;font-weight:900;color:var(--primary)">BDT ${fmt(totalIn-totalOut)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Circle-by-circle collection progress -->
+      <div style="background:var(--surface-low);border-radius:0.85rem;padding:0.85rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--outline);font-family:Manrope,sans-serif;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">Collection Progress</div>
+        ${circles.map(c=>`
+          <div style="margin-bottom:0.6rem">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:0.75rem;font-weight:700">${c.name.split(' ').slice(0,2).join(' ')}</span>
+              <span style="font-size:0.72rem;color:var(--primary);font-weight:700;font-family:Manrope,sans-serif">${c.paid||0}/${c.members} · ${pct(c.paid||0,c.members||1)}%</span>
+            </div>
+            ${progBar(c.paid||0,c.members||1,(c.members-c.paid)>0?'prog-amber':'prog-green')}
+          </div>`).join('')}
+      </div>
     </div>
     <div class="sfc">
       <div class="sh"><div class="sh-title">Recent Transactions</div><button class="btn btn-tonal btn-sm" onclick="navigate('transactions')">View All</button></div>
@@ -669,13 +750,39 @@ function renderAdminDash() {
 function drawAdminChart() {
   const ctx = document.getElementById('admin-chart');
   if(!ctx) return;
-  const months = ['Oct','Nov','Dec','Jan','Feb','Mar'];
-  const income = [40000,38000,42000,45000,40000,44000];
-  const expense = [0,0,2000,5000,0,75000];
-  new Chart(ctx,{type:'bar',data:{labels:months,datasets:[
-    {label:'Contributions',data:income,backgroundColor:'rgba(70,71,211,0.7)',borderRadius:5,borderSkipped:false},
-    {label:'Payouts',data:expense,backgroundColor:'rgba(255,181,84,0.7)',borderRadius:5,borderSkipped:false}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'Manrope',size:9},color:'#747779'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Manrope',size:9},color:'#747779'}}}}});
+  // Destroy previous instance if any
+  const existing = Chart.getChart(ctx);
+  if(existing) existing.destroy();
+  const totalIn  = transactions.filter(t=>t.type==='credit').reduce((a,t)=>a+t.amount,0);
+  const totalOut = transactions.filter(t=>t.type==='debit').reduce((a,t)=>a+t.amount,0);
+  const net      = Math.max(0, totalIn - totalOut);
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Contributions', 'Payouts', 'Net Balance'],
+      datasets: [{
+        data: [totalIn, totalOut, net],
+        backgroundColor: ['rgba(0,105,71,0.85)', 'rgba(255,181,84,0.85)', 'rgba(70,71,211,0.85)'],
+        borderColor: ['#ffffff','#ffffff','#ffffff'],
+        borderWidth: 3,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` BDT ${Number(ctx.parsed).toLocaleString()}`
+          },
+          bodyFont: { family: 'Manrope', size: 11 },
+          titleFont: { family: 'Manrope', size: 11 }
+        }
+      }
+    }
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -904,29 +1011,109 @@ function setTemplate(){
 // ═══════════════════════════════════════════════════════════════
 // CREATE CIRCLE
 // ═══════════════════════════════════════════════════════════════
+const circleGradients = [
+  'linear-gradient(135deg,#4647d3,#9396ff)',
+  'linear-gradient(135deg,#815100,#ffb554)',
+  'linear-gradient(135deg,#006947,#69f6b8)',
+  'linear-gradient(135deg,#4647d3,#ffb554)',
+  'linear-gradient(135deg,#3939c7,#69f6b8)'
+];
+
 function renderCreateCircle() {
   return `
     <button class="back-btn" onclick="navigate('dashboard')">← Back</button>
-    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Create Circle</h1>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:.25rem">Create Circle</h1>
+    <p class="text-sm mb-3">Fill in the details for the new savings circle</p>
+    <div id="cc-error" style="display:none;background:rgba(180,19,64,.1);border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;color:var(--error);font-size:.82rem;font-family:Manrope,sans-serif;font-weight:700"></div>
     <div class="sfc">
-      <div class="input-group"><label class="input-label">Circle Name</label><input class="input-field" placeholder="e.g. Gulshan Samity A"/></div>
-      <div class="input-group"><label class="input-label">Monthly Contribution (BDT)</label><input class="input-field" type="number" placeholder="e.g. 2000"/></div>
-      <div class="input-group"><label class="input-label">Max Members (up to 50)</label><input class="input-field" type="number" placeholder="e.g. 20"/></div>
-      <div class="input-group"><label class="input-label">Circle Type</label>
-        <select class="select-field"><option>Private</option><option>Public</option></select></div>
-      <div class="input-group"><label class="input-label">Cycle</label>
-        <select class="select-field"><option>Monthly</option><option>Weekly</option></select></div>
-      <div class="input-group"><label class="input-label">Start Date</label><input class="input-field" type="date"/></div>
-      <button class="btn btn-kinetic btn-full" onclick="circleCreated()">Create Circle</button>
+      <div class="input-group">
+        <label class="input-label">Circle Name *</label>
+        <input class="input-field" id="cc-name" placeholder="e.g. Gulshan Samity A"/>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Monthly Contribution (BDT) *</label>
+        <input class="input-field" id="cc-contribution" type="number" placeholder="e.g. 2000" min="1"/>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Max Members (up to 50) *</label>
+        <input class="input-field" id="cc-members" type="number" placeholder="e.g. 20" min="2" max="50"/>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Total Cycles (months)</label>
+        <input class="input-field" id="cc-cycles" type="number" placeholder="e.g. 12" min="1"/>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Circle Type</label>
+        <select class="select-field" id="cc-type">
+          <option value="Private">Private</option>
+          <option value="Public">Public</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Cycle</label>
+        <select class="select-field" id="cc-cycle">
+          <option value="Monthly">Monthly</option>
+          <option value="Weekly">Weekly</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Start Date</label>
+        <input class="input-field" id="cc-date" type="date" value="${new Date().toISOString().split('T')[0]}"/>
+      </div>
+      <button class="btn btn-kinetic btn-full" onclick="circleCreated()">⭕ Create Circle</button>
     </div>`;
 }
-function circleCreated(){
-  document.getElementById('content').innerHTML=`<div class="success-state fade-in">
-    <div class="success-icon" style="background:var(--primary-container);font-size:2rem">⭕</div>
-    <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">Circle Created!</h2>
-    <p class="text-sm" style="margin-bottom:1.5rem">Your new savings circle is now active.</p>
-    <button class="btn btn-primary" onclick="navigate('dashboard')">← Back to Home</button>
-  </div>`;
+
+function circleCreated() {
+  // Read values
+  const name        = document.getElementById('cc-name')?.value.trim();
+  const contribution= parseInt(document.getElementById('cc-contribution')?.value);
+  const maxMembers  = parseInt(document.getElementById('cc-members')?.value);
+  const totalCycles = parseInt(document.getElementById('cc-cycles')?.value) || maxMembers || 12;
+  const type        = document.getElementById('cc-type')?.value || 'Private';
+  const startDate   = document.getElementById('cc-date')?.value || new Date().toISOString().split('T')[0];
+  const errEl       = document.getElementById('cc-error');
+
+  // Validate
+  if (!name) { showCCError('Please enter a circle name.'); return; }
+  if (!contribution || contribution < 1) { showCCError('Please enter a valid monthly contribution.'); return; }
+  if (!maxMembers || maxMembers < 2 || maxMembers > 50) { showCCError('Members must be between 2 and 50.'); return; }
+
+  // Build new circle object
+  const newCircle = {
+    id: circles.length + 1,
+    name,
+    contribution,
+    members: 0,
+    current_cycle: 1,
+    total_cycles: totalCycles,
+    pot: 0,
+    paid: 0,
+    type,
+    gradient: circleGradients[circles.length % circleGradients.length],
+    startDate
+  };
+
+  // Add to array
+  circles.push(newCircle);
+
+  // Save to localStorage so it persists across refreshes
+  try { localStorage.setItem('jomaboi_circles', JSON.stringify(circles)); } catch(e) {}
+
+  // Show success then go to dashboard
+  document.getElementById('content').innerHTML = `
+    <div class="success-state fade-in">
+      <div class="success-icon" style="background:var(--primary-container);font-size:2rem">⭕</div>
+      <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">Circle Created!</h2>
+      <p style="font-size:.88rem;color:var(--on-surface-variant);margin-bottom:.25rem"><strong>${name}</strong></p>
+      <p class="text-sm" style="margin-bottom:1.5rem">BDT ${fmt(contribution)}/mo · ${type} · Up to ${maxMembers} members</p>
+      <button class="btn btn-primary" onclick="navigate('dashboard')">← Back to Home</button>
+    </div>`;
+}
+
+function showCCError(msg) {
+  const el = document.getElementById('cc-error');
+  if (el) { el.style.display = 'block'; el.textContent = '⚠️ ' + msg; }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1057,10 +1244,64 @@ function renderSetupLedger(){
   return`<button class="back-btn" onclick="prevStep()">${step===1?'← Back':'← Back'}</button>${stepHtml}${body}`;
 }
 function setSF(k,v){STATE.setupForm[k]=v;}
-function nextStep(){if(STATE.setupStep<4)STATE.setupStep++;render();}
+function nextStep(){
+  const f = STATE.setupForm;
+  // Validate step 2 before proceeding
+  if(STATE.setupStep===2) {
+    if(!f.property || !f.property.trim()) { alert('Please enter a property name.'); return; }
+    if(!f.rent || parseInt(f.rent)<1) { alert('Please enter a valid monthly rent amount.'); return; }
+  }
+  if(STATE.setupStep<4) STATE.setupStep++;
+  render();
+}
 function prevStep(){if(STATE.setupStep>1){STATE.setupStep--;render();}else{STATE.rentalScreen='ledger-dashboard';render();}}
 function sendRentalInvite(){STATE.setupForm.inviteSent=true;render();}
-function createLedger(){STATE.rentalScreen='ledger-dashboard';STATE.setupStep=1;STATE.setupForm={};render();}
+
+function createLedger() {
+  const f = STATE.setupForm;
+
+  // Build the new ledger
+  const newLedger = {
+    id: ledgers.length + 1,
+    type:     f.type     || 'House Rent',
+    property: (f.property || f.address || 'Unnamed Property').trim(),
+    role:     f.role     || 'Landlord',
+    tenant:   f.role === 'Landlord' ? (f.cpName || 'Pending')  : 'Self',
+    landlord: f.role === 'Tenant'   ? (f.cpName || 'Pending')  : 'Self',
+    tenantPhone:   f.cpPhone || '',
+    rent:     parseInt(f.rent)    || 0,
+    dueDay:   parseInt(f.dueDay)  || 5,
+    deposit:  parseInt(f.deposit) || 0,
+    startDate: new Date().toISOString().split('T')[0],
+    status:   'active',
+    payments: []   // empty — admin will log payments manually
+  };
+
+  // Add to array
+  ledgers.push(newLedger);
+
+  // Persist to localStorage
+  try { localStorage.setItem('jomaboi_ledgers', JSON.stringify(ledgers)); } catch(e) {}
+
+  // Reset setup state
+  STATE.setupStep = 1;
+  STATE.setupForm = {};
+  STATE.activeLedger = newLedger;
+
+  // Show success then open the new ledger
+  document.getElementById('content').innerHTML = `
+    <div class="success-state fade-in">
+      <div class="success-icon" style="background:var(--primary-container);font-size:2rem">🏠</div>
+      <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">Ledger Created!</h2>
+      <p style="font-size:.88rem;color:var(--on-surface-variant);margin-bottom:.25rem"><strong>${newLedger.property}</strong></p>
+      <p class="text-sm" style="margin-bottom:.5rem">${newLedger.role} · BDT ${fmt(newLedger.rent)}/mo</p>
+      <p class="text-xs" style="margin-bottom:1.5rem">Due on the ${newLedger.dueDay}${newLedger.dueDay===1?'st':newLedger.dueDay===2?'nd':newLedger.dueDay===3?'rd':'th'} of each month</p>
+      <div class="flex-row" style="justify-content:center">
+        <button class="btn btn-primary" onclick="rentalNav('ledger-overview')">Open Ledger →</button>
+        <button class="btn btn-ghost" onclick="rentalNav('ledger-dashboard')">All Ledgers</button>
+      </div>
+    </div>`;
+}
 
 function renderLedgerOverview(){
   const l=STATE.activeLedger;
@@ -1451,7 +1692,32 @@ function showSaved(){
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
-// Show app hidden until login
+// ═══════════════════════════════════════════════════════════════
+// INIT — restore saved data from localStorage
+// ═══════════════════════════════════════════════════════════════
+try {
+  const savedCircles = localStorage.getItem('jomaboi_circles');
+  if (savedCircles) {
+    const parsed = JSON.parse(savedCircles);
+    if (Array.isArray(parsed) && parsed.length >= 3) {
+      circles.length = 0;
+      parsed.forEach(c => circles.push(c));
+    }
+  }
+} catch(e) {}
+
+try {
+  const savedLedgers = localStorage.getItem('jomaboi_ledgers');
+  if (savedLedgers) {
+    const parsed = JSON.parse(savedLedgers);
+    if (Array.isArray(parsed) && parsed.length >= 2) {
+      ledgers.length = 0;
+      parsed.forEach(l => ledgers.push(l));
+    }
+  }
+} catch(e) {}
+
+// Show app
 document.getElementById('app').style.display='flex';
 </script>
 </body>
