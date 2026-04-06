@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Jomaboi — Digital Savings Circles</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── DESIGN TOKENS ─────────────────────────────────────────────── */
+:root {
+  --primary: #4647d3;
+  --primary-dim: #3939c7;
+  --primary-container: #9396ff;
+  --on-primary: #f4f1ff;
+  --secondary: #815100;
+  --secondary-container: #ffc885;
+  --secondary-dim: #ffb554;
+  --on-secondary: #fff0e3;
+  --tertiary: #006947;
+  --tertiary-container: #69f6b8;
+  --on-tertiary: #c8ffe0;
+  --on-tertiary-container: #005a3c;
+  --surface: #f5f7f9;
+  --surface-lowest: #ffffff;
+  --surface-low: #eef1f3;
+  --surface-container: #e5e9eb;
+  --surface-high: #dfe3e6;
+  --on-surface: #2c2f31;
+  --on-surface-variant: #595c5e;
+  --outline: #747779;
+  --outline-variant: #abadaf;
+  --error: #b41340;
+  --error-container: #f74b6d;
+  --on-error-container: #510017;
+  --kinetic: linear-gradient(135deg, #4647d3 0%, #ffb554 100%);
+  --hero: linear-gradient(135deg, #4647d3 0%, #9396ff 100%);
+  --shadow-primary: 0 8px 24px rgba(70,71,211,0.2);
+  --shadow-float: 0 16px 40px rgba(44,47,49,0.08);
+  --shadow-error: 0 8px 24px rgba(180,19,64,0.15);
+}
+
+/* ── RESET & BASE ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--surface);
+  color: var(--on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── APP SHELL ─────────────────────────────────────────────────── */
+#app {
+  max-width: 440px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* ── TOP BAR ───────────────────────────────────────────────────── */
+#topbar {
+  background: var(--surface-lowest);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.topbar-logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark {
+  width: 32px; height: 32px;
+  background: var(--hero);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-primary);
+  font-size: 16px;
+}
+.logo-text { font-weight: 900; font-size: 1rem; color: var(--on-surface); letter-spacing: -0.02em; }
+.accent-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-container));
+  flex-shrink: 0;
+}
+
+/* ── CONTENT AREA ──────────────────────────────────────────────── */
+#content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 90px;
+  scroll-behavior: smooth;
+}
+#content::-webkit-scrollbar { display: none; }
+
+/* ── BOTTOM NAV ────────────────────────────────────────────────── */
+#bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface-lowest);
+  box-shadow: 0 -4px 20px rgba(44,47,49,0.06);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0 12px;
+  z-index: 100;
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; cursor: pointer;
+  padding: 4px 12px; min-width: 56px;
+  color: var(--outline); font-family: 'Manrope', sans-serif;
+  transition: color 0.15s;
+}
+.nav-item.active { color: var(--primary); }
+.nav-icon-wrap {
+  width: 36px; height: 28px;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  transition: background 0.2s;
+}
+.nav-item.active .nav-icon-wrap { background: rgba(70,71,211,0.1); }
+.nav-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.02em; }
+
+/* ── CHIPS ─────────────────────────────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 3px 10px; border-radius: 999px;
+  font-family: 'Manrope', sans-serif;
+  white-space: nowrap; letter-spacing: 0.02em;
+}
+.chip-primary { background: rgba(70,71,211,0.12); color: var(--primary); }
+.chip-green { background: rgba(0,105,71,0.12); color: var(--tertiary); }
+.chip-amber { background: rgba(255,181,84,0.2); color: var(--secondary); }
+.chip-error { background: rgba(180,19,64,0.12); color: var(--error); }
+.chip-gray { background: var(--surface-high); color: var(--outline); }
+.chip-blue { background: rgba(59,130,246,0.12); color: #2563eb; }
+
+/* ── ASYMMETRIC CARD ───────────────────────────────────────────── */
+.asym-card {
+  background: var(--hero);
+  border-radius: 3rem 1.5rem 3rem 1.5rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-primary);
+  color: white;
+  position: relative; overflow: hidden;
+}
+.asym-card.kinetic { background: var(--kinetic); }
+.asym-card.green { background: linear-gradient(135deg, #006947, #69f6b8); }
+.asym-card.amber { background: linear-gradient(135deg, #815100, #ffb554); }
+.asym-card .deco {
+  position: absolute; right: -30px; bottom: -30px;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+/* ── SURFACE CARDS ─────────────────────────────────────────────── */
+.sfc { background: var(--surface-lowest); border-radius: 1rem; padding: 1.1rem; }
+.sfc-low { background: var(--surface-low); border-radius: 1rem; padding: 1.1rem; }
+
+/* ── BUTTONS ───────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; cursor: pointer; border-radius: 999px;
+  font-family: 'Manrope', sans-serif; font-weight: 700;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.01em; text-decoration: none;
+}
+.btn:hover { opacity: 0.85; }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--primary); color: var(--on-primary); padding: 11px 22px; font-size: 0.84rem; box-shadow: var(--shadow-primary); }
+.btn-kinetic { background: var(--kinetic); color: white; padding: 13px 22px; font-size: 0.88rem; box-shadow: var(--shadow-primary); }
+.btn-tonal { background: rgba(70,71,211,0.12); color: var(--primary); padding: 11px 22px; font-size: 0.84rem; }
+.btn-ghost { background: var(--surface-low); color: var(--on-surface); padding: 11px 22px; font-size: 0.84rem; }
+.btn-danger { background: rgba(180,19,64,0.12); color: var(--error); padding: 11px 22px; font-size: 0.84rem; }
+.btn-success { background: rgba(0,105,71,0.12); color: var(--tertiary); padding: 11px 22px; font-size: 0.84rem; }
+.btn-sm { padding: 6px 14px; font-size: 0.72rem; }
+.btn-full { width: 100%; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── SECTION HEADER ────────────────────────────────────────────── */
+.sh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.sh-title { font-size: 1.05rem; font-weight: 800; color: var(--on-surface); letter-spacing: -0.01em; }
+.sh-label { font-size: 0.62rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.2em; font-family: 'Manrope', sans-serif; margin-bottom: 3px; }
+
+/* ── INPUTS ────────────────────────────────────────────────────── */
+.input-group { margin-bottom: 1rem; }
+.input-label { display: block; font-size: 0.68rem; font-weight: 700; color: var(--on-surface-variant); margin-bottom: 5px; font-family: 'Manrope', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; }
+.input-field, .select-field, .textarea-field {
+  width: 100%; padding: 11px 14px; border-radius: 12px;
+  border: none; background: var(--surface-low);
+  font-size: 0.85rem; font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--on-surface); outline: none; transition: box-shadow 0.2s;
+}
+.input-field:focus, .select-field:focus, .textarea-field:focus {
+  box-shadow: 0 0 0 2px rgba(70,71,211,0.3);
+}
+.textarea-field { resize: none; height: 80px; }
+.input-note { font-size: 0.67rem; color: var(--outline); margin-top: 4px; font-family: 'Manrope', sans-serif; }
+
+/* ── PROGRESS BAR ──────────────────────────────────────────────── */
+.prog-bar { background: var(--surface-high); border-radius: 999px; height: 5px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 999px; transition: width 0.5s ease; }
+.prog-primary { background: linear-gradient(90deg, var(--primary), var(--primary-container)); }
+.prog-green { background: var(--tertiary); }
+.prog-error { background: var(--error); }
+.prog-amber { background: var(--secondary-dim); }
+
+/* ── STATUS DOT ────────────────────────────────────────────────── */
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; flex-shrink: 0; }
+.dot-paid { background: var(--tertiary); }
+.dot-overdue { background: var(--error); }
+.dot-pending { background: var(--secondary-dim); }
+.dot-advance { background: var(--primary); }
+
+/* ── TABLE ─────────────────────────────────────────────────────── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: 'Manrope', sans-serif; }
+.data-table th { padding: 8px 6px; text-align: left; color: var(--outline); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; background: var(--surface-low); }
+.data-table td { padding: 10px 6px; border-top: 1px solid var(--surface-container); }
+.data-table tr:hover td { background: rgba(70,71,211,0.03); }
+
+/* ── ALERT BANNER ──────────────────────────────────────────────── */
+.alert-banner {
+  background: var(--error-container);
+  border-radius: 1rem; padding: 1rem 1.25rem;
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 1rem;
+  position: relative; overflow: hidden;
+}
+.alert-deco {
+  position: absolute; right: -40px; bottom: -40px;
+  width: 130px; height: 130px;
+  background: var(--error); border-radius: 50%; opacity: 0.2;
+}
+
+/* ── BACK BUTTON ───────────────────────────────────────────────── */
+.back-btn {
+  background: rgba(70,71,211,0.1); border: none;
+  color: var(--primary); font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; padding: 6px 14px; border-radius: 999px;
+  margin-bottom: 1.25rem; font-family: 'Manrope', sans-serif;
+  display: inline-block;
+}
+
+/* ── CIRCLE CARDS (horizontal scroll) ─────────────────────────── */
+.scroll-row { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.75rem; }
+.scroll-row::-webkit-scrollbar { display: none; }
+
+/* ── RECEIPT UPLOAD ────────────────────────────────────────────── */
+.upload-box {
+  border: 2px dashed var(--outline-variant);
+  border-radius: 12px; padding: 1rem;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 1.25rem;
+}
+.upload-box.uploaded { border-color: var(--tertiary); background: rgba(105,246,184,0.1); }
+
+/* ── STEP INDICATOR ────────────────────────────────────────────── */
+.steps { display: flex; align-items: center; margin-bottom: 1.75rem; }
+.step-bubble {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 800;
+  font-family: 'Manrope', sans-serif;
+  flex-shrink: 0; transition: all 0.3s;
+}
+.step-bubble.done { background: var(--primary); color: white; }
+.step-bubble.current { background: var(--primary); color: white; }
+.step-bubble.future { background: var(--surface-high); color: var(--outline); }
+.step-label { font-size: 0.58rem; color: var(--outline); font-family: 'Manrope', sans-serif; font-weight: 700; text-align: center; margin-top: 3px; white-space: nowrap; }
+.step-line { flex: 1; height: 2px; background: var(--surface-high); margin: 0 4px; margin-bottom: 16px; transition: all 0.3s; }
+.step-line.done { background: var(--primary); }
+
+/* ── LOGIN SCREEN ──────────────────────────────────────────────── */
+#login-screen {
+  position: fixed; inset: 0;
+  background: linear-gradient(160deg, var(--primary-dim) 0%, var(--primary) 50%, rgba(255,181,84,0.2) 100%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1.5rem; z-index: 999;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+#login-screen.hidden { display: none; }
+.login-logo { text-align: center; margin-bottom: 2rem; }
+.login-mark {
+  width: 72px; height: 72px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; margin: 0 auto 1rem;
+  box-shadow: var(--shadow-primary);
+}
+.login-title { font-size: 2rem; font-weight: 900; color: white; letter-spacing: -0.04em; margin-bottom: 4px; }
+.login-sub { font-size: 0.72rem; color: rgba(255,255,255,0.7); letter-spacing: 0.15em; font-family: 'Manrope', sans-serif; text-transform: uppercase; }
+.login-card {
+  background: rgba(255,255,255,0.97);
+  border-radius: 20px; padding: 2rem 1.75rem;
+  width: 100%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(60,60,150,0.3);
+}
+.role-toggle { display: flex; background: var(--surface-low); padding: 4px; border-radius: 14px; margin-bottom: 1.5rem; }
+.role-btn {
+  flex: 1; padding: 10px; border-radius: 11px; border: none;
+  font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  font-family: 'Manrope', sans-serif; transition: all 0.2s;
+  background: transparent; color: var(--outline);
+}
+.role-btn.active { background: var(--primary); color: white; box-shadow: var(--shadow-float); }
+.login-input-group { margin-bottom: 1rem; }
+.login-label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--on-surface-variant); margin-bottom: 5px; font-family: 'Manrope', sans-serif; letter-spacing: 0.08em; }
+.login-input {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid var(--surface-high);
+  background: white; font-size: 0.85rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--on-surface); outline: none; transition: border-color 0.2s;
+}
+.login-input:focus { border-color: var(--primary); }
+.trust-row { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+.trust-badge {
+  flex: 1; background: var(--surface-low);
+  border-radius: 10px; padding: 0.75rem;
+  text-align: center;
+}
+.trust-icon { font-size: 1.2rem; margin-bottom: 4px; }
+.trust-title { font-size: 0.72rem; font-weight: 800; color: var(--on-surface); font-family: 'Plus Jakarta Sans', sans-serif; }
+.trust-sub { font-size: 0.62rem; color: var(--outline); font-family: 'Manrope', sans-serif; }
+
+/* ── ANIMATIONS ────────────────────────────────────────────────── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+.slide-up { animation: slideUp 0.35s ease forwards; }
+
+/* ── MISC ──────────────────────────────────────────────────────── */
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 0.75rem; }
+.mb-1 { margin-bottom: 0.75rem; }
+.mb-2 { margin-bottom: 1.1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.flex-row { display: flex; gap: 0.65rem; }
+.flex-row.wrap { flex-wrap: wrap; }
+.text-sm { font-size: 0.82rem; color: var(--on-surface-variant); }
+.text-xs { font-size: 0.72rem; color: var(--outline); font-family: 'Manrope', sans-serif; }
+.text-label { font-size: 0.62rem; color: var(--outline); font-family: 'Manrope', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; }
+.font-bold { font-weight: 800; }
+.text-primary { color: var(--primary); }
+.text-green { color: var(--tertiary); }
+.text-amber { color: var(--secondary); }
+.text-error { color: var(--error); }
+.success-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 55vh; text-align: center; }
+.success-icon { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; }
+.divider { height: 1px; background: var(--surface-container); margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-logo">
+    <div class="login-mark">🌿</div>
+    <div class="login-title">Jomaboi</div>
+    <div class="login-sub">Community Wealth Portal</div>
+  </div>
+  <div class="login-card">
+    <div class="role-toggle">
+      <button class="role-btn active" onclick="setRole('member')" id="role-member">👤 Member</button>
+      <button class="role-btn" onclick="setRole('admin')" id="role-admin">⚙️ Admin</button>
+    </div>
+    <div class="login-input-group">
+      <label class="login-label">ACCESS ID</label>
+      <input class="login-input" type="email" id="login-email" placeholder="your.name@jomaboi.co"/>
+    </div>
+    <div class="login-input-group">
+      <label class="login-label">ACCESS TOKEN</label>
+      <input class="login-input" type="password" id="login-pass" placeholder="••••••••••••"/>
+    </div>
+    <button class="btn btn-kinetic btn-full" style="margin-top:0.5rem" onclick="doLogin()">Enter Portal →</button>
+    <div class="trust-row">
+      <div class="trust-badge"><div class="trust-icon">👥</div><div class="trust-title">24k+ Members</div><div class="trust-sub">Growing daily</div></div>
+      <div class="trust-badge"><div class="trust-icon">🛡️</div><div class="trust-title">Vault Secured</div><div class="trust-sub">Shariah compliant</div></div>
+    </div>
+    <div style="text-align:center;margin-top:1rem"><span class="text-xs">Demo: any email + password</span></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="topbar-logo">
+      <div class="logo-mark">🌿</div>
+      <span class="logo-text">Jomaboi</span>
+    </div>
+    <div id="role-chip" class="chip chip-amber">Admin</div>
+  </div>
+  <div class="accent-bar"></div>
+
+  <!-- CONTENT -->
+  <div id="content"></div>
+
+  <!-- BOTTOM NAV -->
+  <div id="bottom-nav"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let STATE = {
+  role: 'member',
+  screen: 'dashboard',
+  activeCircle: null,
+  activePayment: null,
+  activeLedger: null,
+  rentalScreen: 'ledger-dashboard',
+  profileSection: null,
+  setupStep: 1,
+  setupForm: {},
+  logForm: {},
+  chatLog: [{ from:'agent', text:"Hello! I'm your Jomaboi assistant. How can I help today? 🌿" }]
+};
+
+// ═══════════════════════════════════════════════════════════════
+// MOCK DATA
+// ═══════════════════════════════════════════════════════════════
+const circles = [
+  { id:1, name:'Mirpur Samity A', members:20, contribution:2000, current_cycle:4, total_cycles:20, pot:45250, paid:17, type:'Private', gradient:'var(--hero)' },
+  { id:2, name:'Uttara Sisters Fund', members:15, contribution:5000, current_cycle:3, total_cycles:15, pot:32800, paid:15, type:'Private', gradient:'linear-gradient(135deg,#815100,#ffb554)' },
+  { id:3, name:'Dhanmondi Traders', members:30, contribution:3000, current_cycle:2, total_cycles:30, pot:18400, paid:25, type:'Public', gradient:'linear-gradient(135deg,#006947,#69f6b8)' }
+];
+const members = [
+  { id:1, name:'Rahim Uddin', phone:'01711-234567', circle_id:1, payout_pos:5, status:'paid' },
+  { id:2, name:'Fatema Begum', phone:'01912-345678', circle_id:1, payout_pos:2, status:'paid' },
+  { id:3, name:'Karim Hossain', phone:'01611-456789', circle_id:1, payout_pos:8, status:'unpaid' },
+  { id:4, name:'Nasrin Akter', phone:'01811-567890', circle_id:1, payout_pos:1, status:'paid' },
+  { id:5, name:'Jahangir Alam', phone:'01711-678901', circle_id:1, payout_pos:12, status:'unpaid' },
+  { id:6, name:'Roksana Islam', phone:'01912-789012', circle_id:1, payout_pos:3, status:'paid' }
+];
+const transactions = [
+  { id:1, member:'Rahim Uddin', circle:'Mirpur Samity A', amount:2000, date:'Mar 5', type:'credit', category:'Contribution' },
+  { id:2, member:'Fatema Begum', circle:'Mirpur Samity A', amount:2000, date:'Mar 3', type:'credit', category:'Contribution' },
+  { id:3, member:'Nasrin Akter', circle:'Mirpur Samity A', amount:2000, date:'Mar 1', type:'credit', category:'Contribution' },
+  { id:4, member:'Uttara Payout', circle:'Payout', amount:75000, date:'Mar 10', type:'debit', category:'Payout' },
+  { id:5, member:'Roksana Islam', circle:'Mirpur Samity A', amount:2000, date:'Mar 7', type:'credit', category:'Contribution' }
+];
+const savingsData = [2000,4000,6000,8000,10000,12450];
+const savingsLabels = ['Oct','Nov','Dec','Jan','Feb','Mar'];
+const ledgers = [
+  { id:1, type:'House Rent', property:'456 Green Road, Mirpur', role:'Landlord', tenant:'Karim Hossain', rent:8000, dueDay:5, deposit:16000,
+    payments:[
+      {month:'January',due:8000,paid:8000,date:'Jan 4',method:'Bank',status:'Paid'},
+      {month:'February',due:8000,paid:8000,date:'Feb 6',method:'bKash',status:'Paid'},
+      {month:'March',due:8000,paid:8000,date:'Mar 5',method:'Bank',status:'Paid'},
+      {month:'April',due:8000,paid:null,date:null,method:null,status:'Overdue'}
+    ]},
+  { id:2, type:'House Rent', property:'12 Dhanmondi Lake Rd', role:'Tenant', landlord:'Mr. Rahman', rent:25000, dueDay:1, deposit:50000,
+    payments:[
+      {month:'September',due:25000,paid:25000,date:'Sep 1',method:'Bank',status:'Paid'},
+      {month:'October',due:25000,paid:25000,date:'Oct 2',method:'Bank',status:'Paid'},
+      {month:'November',due:25000,paid:25000,date:'Nov 1',method:'Bank',status:'Paid'},
+      {month:'December',due:25000,paid:25000,date:'Dec 3',method:'Bank',status:'Paid'},
+      {month:'January',due:25000,paid:25000,date:'Jan 1',method:'Bank',status:'Paid'},
+      {month:'February',due:25000,paid:25000,date:'Feb 2',method:'Bank',status:'Paid'},
+      {month:'March',due:25000,paid:25000,date:'Mar 1',method:'Bank',status:'Paid'},
+      {month:'April',due:25000,paid:null,date:null,method:null,status:'Pending'}
+    ]}
+];
+
+// ═══════════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════════
+function setRole(r) {
+  STATE.role = r;
+  document.getElementById('role-member').className = 'role-btn' + (r==='member'?' active':'');
+  document.getElementById('role-admin').className = 'role-btn' + (r==='admin'?' active':'');
+}
+function doLogin() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('role-chip').textContent = STATE.role==='admin'?'Admin':'Member';
+  document.getElementById('role-chip').className = 'chip ' + (STATE.role==='admin'?'chip-amber':'chip-primary');
+  buildNav();
+  navigate('dashboard');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+const adminNavItems = [
+  {id:'dashboard',icon:'🏠',label:'Home'},
+  {id:'transactions',icon:'💳',label:'Payments'},
+  {id:'rent',icon:'🏘️',label:'Rent'},
+  {id:'payout',icon:'💰',label:'Payouts'},
+  {id:'profile',icon:'👤',label:'Profile'}
+];
+const memberNavItems = [
+  {id:'dashboard',icon:'🏠',label:'Home'},
+  {id:'profile',icon:'👤',label:'Profile'}
+];
+
+function buildNav() {
+  const items = STATE.role==='admin'?adminNavItems:memberNavItems;
+  document.getElementById('bottom-nav').innerHTML = items.map(n=>`
+    <button class="nav-item ${STATE.screen===n.id?'active':''}" onclick="navigate('${n.id}')" id="nav-${n.id}">
+      <div class="nav-icon-wrap">${n.icon}</div>
+      <span class="nav-label">${n.label}</span>
+    </button>`).join('');
+}
+function updateNav(s) {
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const active = ['transactions','payout','rent'].includes(s)?s:'dashboard';
+  const el = document.getElementById('nav-'+active);
+  if(el) el.classList.add('active');
+  if(s==='profile') { document.getElementById('nav-profile')?.classList.add('active'); }
+}
+function navigate(screen) {
+  STATE.screen = screen;
+  STATE.rentalScreen = 'ledger-dashboard';
+  STATE.profileSection = null;
+  STATE.setupStep = 1;
+  updateNav(screen);
+  render();
+}
+function goBack() {
+  if(STATE.profileSection) { STATE.profileSection=null; render(); return; }
+  if(STATE.screen==='circle-detail'||STATE.screen==='record-payment'||STATE.screen==='broadcast'||STATE.screen==='create-circle') { navigate('dashboard'); return; }
+  if(STATE.screen==='confirm-payment') { STATE.screen='record-payment'; render(); return; }
+  navigate('dashboard');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER ROUTER
+// ═══════════════════════════════════════════════════════════════
+function render() {
+  const c = document.getElementById('content');
+  c.scrollTop = 0;
+  let html = '';
+  if(STATE.screen==='profile') { html = renderProfile(); }
+  else if(STATE.role==='admin') {
+    if(STATE.screen==='dashboard') html = renderAdminDash();
+    else if(STATE.screen==='transactions') html = renderTransactions();
+    else if(STATE.screen==='rent') html = renderRent();
+    else if(STATE.screen==='payout') html = renderPayouts();
+    else if(STATE.screen==='circle-detail') html = renderCircleDetail();
+    else if(STATE.screen==='record-payment') html = renderRecordPayment();
+    else if(STATE.screen==='confirm-payment') html = renderConfirmPayment();
+    else if(STATE.screen==='broadcast') html = renderBroadcast();
+    else if(STATE.screen==='create-circle') html = renderCreateCircle();
+    else html = renderAdminDash();
+  } else {
+    html = renderMemberDash();
+  }
+  c.innerHTML = `<div class="fade-in">${html}</div>`;
+  afterRender();
+}
+
+function afterRender() {
+  // Draw charts after DOM update
+  setTimeout(()=>{
+    if(STATE.screen==='dashboard'&&STATE.role==='admin') drawAdminChart();
+    if(STATE.screen==='dashboard'&&STATE.role==='member') drawMemberChart();
+    if(STATE.screen==='rent'&&STATE.rentalScreen==='summary') drawRentalChart();
+  }, 50);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+function pct(v,m){return Math.min(100,Math.round((v/m)*100));}
+function fmt(n){return Number(n||0).toLocaleString();}
+function progBar(v,m,cls='prog-primary'){return`<div class="prog-bar"><div class="prog-fill ${cls}" style="width:${pct(v,m)}%"></div></div>`;}
+function statusChip(s){
+  const m={Paid:'chip-green',Overdue:'chip-error',Pending:'chip-amber',Active:'chip-green'};
+  return `<span class="chip ${m[s]||'chip-gray'}">${s}</span>`;
+}
+function statusDot(s){const m={Paid:'dot-paid',Overdue:'dot-overdue',Pending:'dot-pending',Advance:'dot-advance'};return`<span class="status-dot ${m[s]||''}"></span>`;}
+function txColor(t){return t==='credit'?'var(--tertiary)':'var(--secondary)';}
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+function renderAdminDash() {
+  const totalIn=transactions.filter(t=>t.type==='credit').reduce((a,t)=>a+t.amount,0);
+  const totalOut=transactions.filter(t=>t.type==='debit').reduce((a,t)=>a+t.amount,0);
+  const unpaid=circles.reduce((a,c)=>a+(c.members-c.paid),0);
+  return `
+    <div style="margin-bottom:1.25rem">
+      <p class="text-xs">Wednesday, 01 April 2026</p>
+      <h1 style="font-size:1.25rem;font-weight:900;letter-spacing:-0.02em">Good morning, Admin 👋</h1>
+    </div>
+    ${unpaid>0?`<div class="alert-banner mb-2">
+      <div style="z-index:1"><div style="font-weight:800;font-size:0.88rem;color:var(--on-error-container)">${unpaid} members unpaid this cycle</div><div style="font-size:0.68rem;color:var(--on-error-container);opacity:.75;font-family:Manrope,sans-serif">Urgent action needed</div></div>
+      <button class="btn btn-sm" style="background:var(--on-error-container);color:var(--surface);z-index:1" onclick="navigate('broadcast')">Notify</button>
+      <div class="alert-deco"></div>
+    </div>`:''}
+    <div style="margin-bottom:1.75rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem">
+        <div style="font-size:1.4rem;font-weight:800;letter-spacing:-0.02em">Pool Balances</div>
+        <span class="text-xs">Swipe →</span>
+      </div>
+      <div class="scroll-row">
+        ${circles.map(c=>`
+          <div class="asym-card" style="min-width:220px;flex-shrink:0;cursor:pointer;background:${c.gradient}" onclick="openCircle(${c.id})">
+            <div class="deco"></div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem">
+              <span style="font-size:1.3rem">💧</span>
+              <span style="background:rgba(255,255,255,.2);backdrop-filter:blur(8px);padding:3px 10px;border-radius:999px;font-size:0.65rem;font-weight:700;font-family:Manrope,sans-serif">${c.name.split(' ')[0]}</span>
+            </div>
+            <p style="font-size:0.62rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Total Collected</p>
+            <h4 style="font-size:1.5rem;font-weight:900;letter-spacing:-0.02em">BDT ${fmt(c.pot)}</h4>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="grid-2 mb-2">
+      <div class="sfc" style="border-left:5px solid var(--tertiary)">
+        <div style="font-size:0.62rem;font-weight:700;color:var(--tertiary);font-family:Manrope,sans-serif;text-transform:uppercase;margin-bottom:4px">Contributions</div>
+        <div style="font-size:1.2rem;font-weight:900">BDT ${fmt(totalIn)}</div>
+        <div style="margin-top:8px">${progBar(85,100,'prog-green')}</div>
+      </div>
+      <div class="sfc" style="border-left:5px solid var(--secondary-dim)">
+        <div style="font-size:0.62rem;font-weight:700;color:var(--secondary);font-family:Manrope,sans-serif;text-transform:uppercase;margin-bottom:4px">Payouts</div>
+        <div style="font-size:1.2rem;font-weight:900">BDT ${fmt(totalOut)}</div>
+        <div style="margin-top:8px">${progBar(54,100,'prog-amber')}</div>
+      </div>
+    </div>
+    <div class="sfc mb-2">
+      <div class="sh">
+        <div><div class="sh-label">Active</div><div class="sh-title">My Circles</div></div>
+        <button class="btn btn-primary btn-sm" onclick="navigate('create-circle')">+ New</button>
+      </div>
+      ${circles.map(c=>{
+        const overdueC=c.members-c.paid>0;
+        return`<div style="padding:.9rem;background:var(--surface-low);border-radius:1rem;margin-bottom:.75rem;cursor:pointer;transition:transform .15s" onclick="openCircle(${c.id})" onmouseenter="this.style.transform='scale(1.01)'" onmouseleave="this.style.transform='scale(1)'">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+            <div><div style="font-weight:800;font-size:.88rem">🏠 ${c.name}</div><div class="text-xs">${c.members} members · BDT ${fmt(c.contribution)}/mo · <span style="color:${c.type==='Public'?'#2563eb':'var(--primary)'};font-weight:700">${c.type}</span></div></div>
+            ${statusChip(overdueC?'Overdue':'Active')}
+          </div>
+          ${progBar(c.paid,c.members,overdueC?'prog-error':'prog-green')}
+          <div style="display:flex;justify-content:space-between;margin-top:7px"><span class="text-xs">Cycle ${c.current_cycle}/${c.total_cycles}</span><span style="font-size:.68rem;font-weight:700;color:var(--primary)">BDT ${fmt(c.pot)}</span></div>
+        </div>`;}).join('')}
+    </div>
+    <div class="sfc mb-2">
+      <div class="sh"><div class="sh-title">Monthly Overview</div></div>
+      <canvas id="admin-chart" height="140"></canvas>
+    </div>
+    <div class="sfc">
+      <div class="sh"><div class="sh-title">Recent Transactions</div><button class="btn btn-tonal btn-sm" onclick="navigate('transactions')">View All</button></div>
+      ${transactions.slice(0,4).map(t=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--surface-container)">
+          <div style="display:flex;align-items:center;gap:.65rem">
+            <div style="width:36px;height:36px;background:${t.type==='credit'?'var(--tertiary-container)':'var(--secondary-container)'};border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem">${t.type==='credit'?'⬇️':'⬆️'}</div>
+            <div><div style="font-size:.82rem;font-weight:700">${t.member}</div><div class="text-xs">${t.category} · ${t.date}</div></div>
+          </div>
+          <span style="font-weight:800;color:${txColor(t.type)};font-size:.88rem">${t.type==='credit'?'+':'-'} ${fmt(t.amount)}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+function drawAdminChart() {
+  const ctx = document.getElementById('admin-chart');
+  if(!ctx) return;
+  const months = ['Oct','Nov','Dec','Jan','Feb','Mar'];
+  const income = [40000,38000,42000,45000,40000,44000];
+  const expense = [0,0,2000,5000,0,75000];
+  new Chart(ctx,{type:'bar',data:{labels:months,datasets:[
+    {label:'Contributions',data:income,backgroundColor:'rgba(70,71,211,0.7)',borderRadius:5,borderSkipped:false},
+    {label:'Payouts',data:expense,backgroundColor:'rgba(255,181,84,0.7)',borderRadius:5,borderSkipped:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'Manrope',size:9},color:'#747779'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Manrope',size:9},color:'#747779'}}}}});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CIRCLE DETAIL
+// ═══════════════════════════════════════════════════════════════
+function openCircle(id) {
+  STATE.activeCircle = circles.find(c=>c.id===id);
+  STATE.screen = 'circle-detail';
+  updateNav('dashboard');
+  render();
+}
+function renderCircleDetail() {
+  const c = STATE.activeCircle;
+  if(!c) return '';
+  const mems = members.filter(m=>m.circle_id===c.id);
+  return `
+    <button class="back-btn" onclick="navigate('dashboard')">← Back</button>
+    <div class="asym-card mb-3" style="background:${c.gradient}">
+      <div class="deco"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+        <span class="chip chip-primary" style="background:rgba(255,255,255,.2);color:white">${c.type}</span>
+        <button onclick="navigate('record-payment')" style="background:rgba(255,255,255,.2);border:none;color:white;font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:Manrope,sans-serif">+ Payment</button>
+      </div>
+      <h1 style="font-size:1.25rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px">${c.name}</h1>
+      <p style="color:rgba(255,255,255,.7);font-size:.72rem;font-family:Manrope,sans-serif;margin-bottom:1.25rem">Cycle ${c.current_cycle}/${c.total_cycles}</p>
+      <div style="display:flex;gap:1.25rem">
+        ${[['Rent',`BDT ${fmt(c.contribution)}/mo`],['Pool',`BDT ${fmt(c.pot)}`],['Members',c.members]].map(([k,v])=>`<div><div style="font-size:.6rem;color:rgba(255,255,255,.6);font-family:Manrope,sans-serif;text-transform:uppercase">${k}</div><div style="font-size:.9rem;font-weight:800">${v}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="sfc mb-2">
+      <div style="font-size:.88rem;font-weight:800;margin-bottom:.75rem">Cycle ${c.current_cycle} Status</div>
+      ${progBar(c.paid,c.members,'prog-primary')}
+      <div style="display:flex;justify-content:space-between;margin-top:7px"><span class="text-xs">${c.paid} paid · ${c.members-c.paid} pending</span><span style="font-size:.7rem;font-weight:700;color:var(--primary)">${pct(c.paid,c.members)}%</span></div>
+    </div>
+    <div class="sfc">
+      <div class="sh"><div class="sh-title">Members</div><span class="chip chip-blue">${mems.length} total</span></div>
+      ${mems.map(m=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:var(--surface-low);border-radius:1rem;margin-bottom:.6rem">
+          <div style="display:flex;align-items:center;gap:.65rem">
+            <div style="width:36px;height:36px;background:${m.status==='paid'?'var(--tertiary-container)':'rgba(180,19,64,.1)'};border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem">${m.status==='paid'?'✅':'⏳'}</div>
+            <div><div style="font-weight:700;font-size:.82rem">${m.name}</div><div class="text-xs">${m.phone} · Payout #${m.payout_pos}</div></div>
+          </div>
+          <span class="chip ${m.status==='paid'?'chip-green':'chip-error'}">${m.status}</span>
+        </div>`).join('')}
+    </div>
+    <div style="height:1rem"></div>
+    <div class="flex-row">
+      <button class="btn btn-primary" style="flex:1" onclick="navigate('record-payment')">💳 Log Payment</button>
+      <button class="btn btn-tonal" style="flex:1">📊 Summary</button>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RECORD PAYMENT
+// ═══════════════════════════════════════════════════════════════
+function renderRecordPayment() {
+  const f = STATE.logForm;
+  return `
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:.25rem">Log Payment</h1>
+    <p class="text-sm mb-3">${STATE.activeCircle?.name||'Savings Circle'}</p>
+    <div class="sfc">
+      <div style="display:flex;background:var(--surface-low);border-radius:12px;padding:4px;margin-bottom:1.1rem">
+        <button onclick="setLogType('credit')" id="lt-credit" class="btn" style="flex:1;border-radius:9px;padding:9px;font-size:.78rem;background:${(f.type||'credit')==='credit'?'var(--tertiary)':'transparent'};color:${(f.type||'credit')==='credit'?'white':'var(--outline)'}">💚 Contribution</button>
+        <button onclick="setLogType('debit')" id="lt-debit" class="btn" style="flex:1;border-radius:9px;padding:9px;font-size:.78rem;background:${(f.type)==='debit'?'var(--secondary)':'transparent'};color:${(f.type)==='debit'?'white':'var(--outline)'}">🟠 Payout</button>
+      </div>
+      <div class="input-group"><label class="input-label">Member</label>
+        <select class="select-field" id="lf-member" onchange="updateLogForm('member',this.value)">
+          <option value="">Select member...</option>
+          ${members.map(m=>`<option value="${m.name}" ${f.member===m.name?'selected':''}>${m.name}</option>`).join('')}
+        </select></div>
+      <div class="input-group"><label class="input-label">Circle</label>
+        <select class="select-field" id="lf-circle" onchange="updateLogForm('circle',this.value)">
+          <option value="">Select circle...</option>
+          ${circles.map(c=>`<option value="${c.name}" ${f.circle===c.name?'selected':''}>${c.name}</option>`).join('')}
+        </select></div>
+      <div class="input-group"><label class="input-label">Amount (BDT)</label><input class="input-field" type="number" placeholder="e.g. 2000" id="lf-amount" value="${f.amount||''}" oninput="updateLogForm('amount',this.value)"/></div>
+      <div class="input-group"><label class="input-label">Payment Method</label>
+        <select class="select-field" onchange="updateLogForm('method',this.value)">
+          ${['Bank Transfer','bKash','Nagad','Cash','Cheque'].map(m=>`<option value="${m}" ${f.method===m?'selected':''}>${m}</option>`).join('')}
+        </select></div>
+      <div class="input-group"><label class="input-label">Date</label><input class="input-field" type="date" value="${f.date||new Date().toISOString().split('T')[0]}" onchange="updateLogForm('date',this.value)"/></div>
+      <div class="input-group"><label class="input-label">Notes (optional)</label><textarea class="textarea-field" placeholder="e.g. TXN ref: 78234" oninput="updateLogForm('notes',this.value)">${f.notes||''}</textarea></div>
+      <div class="upload-box ${f.receiptUploaded?'uploaded':''}" onclick="toggleReceipt()">
+        <div style="font-size:1.4rem;margin-bottom:3px">${f.receiptUploaded?'✅':'📎'}</div>
+        <div style="font-size:.78rem;font-weight:700;color:${f.receiptUploaded?'var(--tertiary)':'var(--outline)'};font-family:Manrope,sans-serif">${f.receiptUploaded?'Receipt attached':'Tap to upload receipt (optional)'}</div>
+      </div>
+      <button class="btn btn-kinetic btn-full" onclick="submitPayment()">Submit Payment →</button>
+    </div>`;
+}
+function setLogType(t){STATE.logForm.type=t;render();}
+function updateLogForm(k,v){STATE.logForm[k]=v;}
+function toggleReceipt(){STATE.logForm.receiptUploaded=!STATE.logForm.receiptUploaded;render();}
+function submitPayment(){STATE.screen='confirm-payment';render();}
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIRM PAYMENT
+// ═══════════════════════════════════════════════════════════════
+function renderConfirmPayment() {
+  return `
+    <button class="back-btn" onclick="navigate('dashboard')">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Payment Confirmation</h1>
+    <div class="asym-card kinetic mb-3" style="text-align:center">
+      <div class="deco"></div>
+      <p style="font-size:.68rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Tenant Paid</p>
+      <h2 style="font-size:2rem;font-weight:900;letter-spacing:-.03em;margin-bottom:4px">BDT ${fmt(STATE.logForm.amount||STATE.activeCircle?.contribution||2000)}</h2>
+      <p style="font-size:.8rem;color:rgba(255,255,255,.8);font-family:Manrope,sans-serif">via ${STATE.logForm.method||'Bank'}</p>
+    </div>
+    <div class="sfc mb-3">
+      ${[['Member',STATE.logForm.member||'Karim Hossain'],['Circle',STATE.logForm.circle||'Mirpur Samity A'],['Date',STATE.logForm.date||new Date().toLocaleDateString()],['Notes',STATE.logForm.notes||'—']].map(([k,v])=>`
+        <div style="display:flex;justify-content:space-between;padding:.7rem 0;border-bottom:1px solid var(--surface-container)">
+          <span class="text-xs">${k}</span><span style="font-size:.78rem;font-weight:600;text-align:right;max-width:60%">${v}</span>
+        </div>`).join('')}
+    </div>
+    <div class="flex-row">
+      <button class="btn btn-success" style="flex:1" onclick="confirmPayment('confirmed')">✓ Confirm</button>
+      <button class="btn btn-danger" style="flex:1" onclick="confirmPayment('rejected')">✗ Reject</button>
+    </div>`;
+}
+function confirmPayment(s) {
+  const icon = s==='confirmed'?'✅':'❌';
+  const bg = s==='confirmed'?'var(--tertiary-container)':'var(--error-container)';
+  const msg = s==='confirmed'?'Payment confirmed! Ledger updated.':'Payment rejected. Member notified.';
+  document.getElementById('content').innerHTML = `<div class="success-state fade-in">
+    <div class="success-icon" style="background:${bg};font-size:2rem">${icon}</div>
+    <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">${s==='confirmed'?'Payment Confirmed!':'Payment Rejected'}</h2>
+    <p class="text-sm" style="margin-bottom:1.5rem">${msg}</p>
+    <button class="btn btn-primary" onclick="navigate('dashboard')">← Back to Home</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRANSACTIONS
+// ═══════════════════════════════════════════════════════════════
+let txFilter = 'all';
+function renderTransactions() {
+  const filtered = txFilter==='all'?transactions:transactions.filter(t=>t.type===txFilter);
+  const inc = transactions.filter(t=>t.type==='credit').reduce((a,t)=>a+t.amount,0);
+  const exp = transactions.filter(t=>t.type==='debit').reduce((a,t)=>a+t.amount,0);
+  return `
+    <div class="sh"><div class="sh-title">All Transactions</div></div>
+    <div class="grid-2 mb-2">
+      <div class="sfc" style="border-left:5px solid var(--tertiary)"><div class="text-label">In</div><div style="font-size:1.1rem;font-weight:900;color:var(--tertiary)">BDT ${fmt(inc)}</div></div>
+      <div class="sfc" style="border-left:5px solid var(--secondary-dim)"><div class="text-label">Out</div><div style="font-size:1.1rem;font-weight:900;color:var(--secondary)">BDT ${fmt(exp)}</div></div>
+    </div>
+    <div style="display:flex;background:var(--surface-low);border-radius:12px;padding:4px;margin-bottom:1.1rem">
+      ${['all','credit','debit'].map(f=>`<button onclick="setTxFilter('${f}')" style="flex:1;padding:8px;border-radius:9px;border:none;font-size:.78rem;font-weight:700;cursor:pointer;font-family:Manrope,sans-serif;background:${txFilter===f?'var(--primary)':'transparent'};color:${txFilter===f?'white':'var(--outline)'}">
+        ${{all:'All',credit:'Income',debit:'Expense'}[f]}</button>`).join('')}
+    </div>
+    <div class="sfc">
+      ${filtered.map(t=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--surface-container)">
+          <div style="display:flex;align-items:center;gap:.65rem">
+            <div style="width:36px;height:36px;background:${t.type==='credit'?'var(--tertiary-container)':'var(--secondary-container)'};border-radius:10px;display:flex;align-items:center;justify-content:center">${t.type==='credit'?'⬇️':'⬆️'}</div>
+            <div><div style="font-size:.82rem;font-weight:700">${t.member}</div><div class="text-xs">${t.category} · ${t.date}</div></div>
+          </div>
+          <span style="font-weight:800;color:${txColor(t.type)}">${t.type==='credit'?'+':'-'} ${fmt(t.amount)}</span>
+        </div>`).join('')}
+    </div>`;
+}
+function setTxFilter(f){txFilter=f;render();}
+
+// ═══════════════════════════════════════════════════════════════
+// PAYOUTS
+// ═══════════════════════════════════════════════════════════════
+const payouts = [
+  {circle:'Uttara Sisters Fund',recipient:'Fatema Begum',amount:75000,cycle:3,status:'pending'},
+  {circle:'Mirpur Samity A',recipient:'Roksana Islam',amount:40000,cycle:4,status:'upcoming'},
+  {circle:'Dhanmondi Traders',recipient:'Jahangir Alam',amount:90000,cycle:2,status:'completed'}
+];
+let disbursed = [];
+function renderPayouts() {
+  return `
+    <div class="sh"><div class="sh-title">Payout Manager</div></div>
+    ${payouts.map((p,i)=>`
+      <div class="sfc mb-2">
+        <div style="display:flex;justify-content:space-between;margin-bottom:.75rem">
+          <div><div style="font-weight:800;font-size:.92rem">${p.recipient}</div><div class="text-xs">${p.circle} · Cycle ${p.cycle}</div></div>
+          <span class="chip ${disbursed.includes(i)||p.status==='completed'?'chip-green':p.status==='pending'?'chip-amber':'chip-blue'}">${disbursed.includes(i)?'Disbursed':p.status}</span>
+        </div>
+        <div style="font-size:1.5rem;font-weight:900;color:var(--primary);letter-spacing:-.02em;margin-bottom:.85rem">BDT ${fmt(p.amount)}</div>
+        ${p.status==='pending'&&!disbursed.includes(i)?`
+          <div class="flex-row">
+            <button class="btn btn-success" style="flex:1" onclick="markDisbursed(${i})">✓ Mark Disbursed</button>
+            <button class="btn btn-ghost" style="flex:1">Details</button>
+          </div>`:
+          `<div style="font-size:.75rem;color:var(--on-tertiary-container);background:var(--tertiary-container);padding:6px 12px;border-radius:999px;display:inline-block;font-family:Manrope,sans-serif;font-weight:600">✅ Confirmed</div>`}
+      </div>`).join('')}`;
+}
+function markDisbursed(i){disbursed=[...disbursed,i];render();}
+
+// ═══════════════════════════════════════════════════════════════
+// BROADCAST
+// ═══════════════════════════════════════════════════════════════
+function renderBroadcast() {
+  return `
+    <button class="back-btn" onclick="navigate('dashboard')">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Broadcast</h1>
+    <div class="sfc">
+      <div class="input-group"><label class="input-label">Send To</label>
+        <select class="select-field">
+          <option>All Members</option>
+          ${circles.map(c=>`<option>${c.name}</option>`).join('')}
+          <option>Unpaid Only</option>
+        </select></div>
+      <div class="input-group"><label class="input-label">Message</label><textarea class="textarea-field" id="broadcast-msg" placeholder="Type your message..." style="height:100px"></textarea></div>
+      <div class="flex-row">
+        <button class="btn btn-primary" style="flex:1" onclick="sendBroadcast()">📨 Send Message</button>
+        <button class="btn btn-ghost" onclick="setTemplate()">Template</button>
+      </div>
+    </div>`;
+}
+function sendBroadcast(){
+  document.getElementById('content').innerHTML=`<div class="success-state fade-in">
+    <div class="success-icon" style="background:var(--tertiary-container);font-size:2rem">✅</div>
+    <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">Message Sent!</h2>
+    <p class="text-sm" style="margin-bottom:1.5rem">All selected members have been notified.</p>
+    <button class="btn btn-primary" onclick="navigate('dashboard')">← Back to Home</button>
+  </div>`;
+}
+function setTemplate(){
+  const el=document.getElementById('broadcast-msg');
+  if(el) el.value='Reminder: Your monthly contribution is due. Please complete payment at your earliest convenience. Thank you.';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CREATE CIRCLE
+// ═══════════════════════════════════════════════════════════════
+function renderCreateCircle() {
+  return `
+    <button class="back-btn" onclick="navigate('dashboard')">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Create Circle</h1>
+    <div class="sfc">
+      <div class="input-group"><label class="input-label">Circle Name</label><input class="input-field" placeholder="e.g. Gulshan Samity A"/></div>
+      <div class="input-group"><label class="input-label">Monthly Contribution (BDT)</label><input class="input-field" type="number" placeholder="e.g. 2000"/></div>
+      <div class="input-group"><label class="input-label">Max Members (up to 50)</label><input class="input-field" type="number" placeholder="e.g. 20"/></div>
+      <div class="input-group"><label class="input-label">Circle Type</label>
+        <select class="select-field"><option>Private</option><option>Public</option></select></div>
+      <div class="input-group"><label class="input-label">Cycle</label>
+        <select class="select-field"><option>Monthly</option><option>Weekly</option></select></div>
+      <div class="input-group"><label class="input-label">Start Date</label><input class="input-field" type="date"/></div>
+      <button class="btn btn-kinetic btn-full" onclick="circleCreated()">Create Circle</button>
+    </div>`;
+}
+function circleCreated(){
+  document.getElementById('content').innerHTML=`<div class="success-state fade-in">
+    <div class="success-icon" style="background:var(--primary-container);font-size:2rem">⭕</div>
+    <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">Circle Created!</h2>
+    <p class="text-sm" style="margin-bottom:1.5rem">Your new savings circle is now active.</p>
+    <button class="btn btn-primary" onclick="navigate('dashboard')">← Back to Home</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HOUSE RENT MODULE
+// ═══════════════════════════════════════════════════════════════
+function renderRent() {
+  const rs = STATE.rentalScreen;
+  if(rs==='ledger-dashboard') return renderLedgerDashboard();
+  if(rs==='setup-ledger') return renderSetupLedger();
+  if(rs==='ledger-overview') return renderLedgerOverview();
+  if(rs==='log-payment') return renderRentalLogPayment();
+  if(rs==='confirm-payment') return renderRentalConfirm();
+  if(rs==='summary') return renderRentalSummary();
+  if(rs==='close-ledger') return renderCloseLedger();
+  return renderLedgerDashboard();
+}
+function rentalNav(s,lid){
+  STATE.rentalScreen=s;
+  if(lid!==undefined) STATE.activeLedger=ledgers.find(l=>l.id===lid);
+  render();
+}
+
+function renderLedgerDashboard(){
+  const totalRent=ledgers.reduce((a,l)=>a+l.rent,0);
+  const overdue=ledgers.filter(l=>l.payments.some(p=>p.status==='Overdue')).length;
+  return`
+    <div class="sh"><div><div class="sh-label">Rental Module</div><div class="sh-title">House Rent Ledger</div></div>
+      <button class="btn btn-primary btn-sm" onclick="rentalNav('setup-ledger')">+ New</button></div>
+    <div class="asym-card kinetic mb-3">
+      <div class="deco"></div>
+      <p style="font-size:.62rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Monthly Portfolio</p>
+      <h2 style="font-size:1.8rem;font-weight:900;letter-spacing:-.03em;margin-bottom:1rem">BDT ${fmt(totalRent)}/mo</h2>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <div style="background:rgba(255,255,255,.15);backdrop-filter:blur(8px);padding:5px 12px;border-radius:999px">
+          <span style="font-size:.7rem;color:white;font-family:Manrope,sans-serif;font-weight:700">🏠 ${ledgers.length} Ledgers</span></div>
+        ${overdue>0?`<div style="background:rgba(180,19,64,.3);padding:5px 12px;border-radius:999px"><span style="font-size:.7rem;color:#ffb0b0;font-family:Manrope,sans-serif;font-weight:700">⚠️ ${overdue} Overdue</span></div>`:''}
+      </div>
+    </div>
+    ${ledgers.map(l=>{
+      const od=l.payments.find(p=>p.status==='Overdue');
+      const paid=l.payments.filter(p=>p.status==='Paid').length;
+      return`<div class="sfc mb-2" style="cursor:pointer;transition:transform .15s" onclick="rentalNav('ledger-overview',${l.id})" onmouseenter="this.style.transform='scale(1.01)'" onmouseleave="this.style.transform='scale(1)'">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.85rem">
+          <div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:4px"><span style="font-size:1.1rem">🏠</span><span style="font-weight:800;font-size:.9rem">${l.property}</span></div>
+            <div class="text-xs">${l.role} · ${l.role==='Landlord'?'Tenant: '+(l.tenant||'?'):'Landlord: '+(l.landlord||'?')}</div></div>
+          <span class="chip ${od?'chip-error':'chip-green'}">${od?'Overdue':'Active'}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:.75rem">
+          <div><div class="text-label">Monthly Rent</div><div style="font-size:1.1rem;font-weight:800;color:var(--primary)">BDT ${fmt(l.rent)}</div></div>
+          <div style="text-align:right"><div class="text-label">Due Day</div><div style="font-size:1.1rem;font-weight:800">${l.dueDay}${l.dueDay===1?'st':'th'}</div></div>
+          <div style="text-align:right"><div class="text-label">Paid</div><div style="font-size:1.1rem;font-weight:800;color:var(--tertiary)">${paid}/${l.payments.length}</div></div>
+        </div>
+        ${progBar(paid,l.payments.length,od?'prog-error':'prog-green')}
+      </div>`;}).join('')}`;
+}
+
+function renderSetupLedger(){
+  const step=STATE.setupStep;
+  const f=STATE.setupForm;
+  const steps=['Type','Details','Counterparty','Review'];
+  const stepHtml=`<div class="steps">
+    ${steps.map((s,i)=>`
+      <div style="display:flex;flex-direction:column;align-items:center;${i<steps.length-1?'flex:0 0 auto':''}">
+        <div class="step-bubble ${i+1<step?'done':i+1===step?'current':'future'}">${i+1<step?'✓':i+1}</div>
+        <div class="step-label">${s}</div>
+      </div>
+      ${i<steps.length-1?`<div class="step-line ${i+1<step?'done':''}"></div>`:''}`).join('')}
+  </div>`;
+
+  let body='';
+  if(step===1) body=`
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Select Ledger Type</h1>
+    ${[['🏠','House Rent','Monthly house/apartment rent'],['🏪','Shop / Commercial','Commercial property rent'],['🚗','Vehicle Lease','Car or vehicle rental'],['📦','Storage','Storage space rental']].map(([icon,type,desc])=>`
+      <div onclick="setSF('type','${type}')" style="padding:1rem 1.25rem;background:${f.type===type?'rgba(70,71,211,.1)':'var(--surface-lowest)'};border-radius:1rem;cursor:pointer;display:flex;align-items:center;gap:1rem;border:2px solid ${f.type===type?'var(--primary)':'transparent'};transition:all .2s;margin-bottom:.75rem">
+        <span style="font-size:1.5rem">${icon}</span>
+        <div style="flex:1"><div style="font-weight:800;font-size:.9rem">${type}</div><div class="text-xs">${desc}</div></div>
+        ${f.type===type?'<span style="color:var(--primary);font-weight:800">✓</span>':''}
+      </div>`).join('')}
+    <button class="btn btn-kinetic btn-full" onclick="nextStep()">Continue →</button>`;
+
+  else if(step===2) body=`
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Setup Details</h1>
+    <div class="sfc">
+      <div class="input-group"><label class="input-label">Your Role</label>
+        <select class="select-field" onchange="setSF('role',this.value)"><option value="Landlord">🏠 Landlord (Owner)</option><option value="Tenant">👤 Tenant (Renter)</option></select></div>
+      <div class="input-group"><label class="input-label">Property Name</label><input class="input-field" placeholder="e.g. Green Road Apartment" oninput="setSF('property',this.value)" value="${f.property||''}"/></div>
+      <div class="input-group"><label class="input-label">Full Address</label><input class="input-field" placeholder="e.g. 456 Green Road, Mirpur" oninput="setSF('address',this.value)" value="${f.address||''}"/></div>
+      <div class="input-group"><label class="input-label">Monthly Rent (BDT)</label><input class="input-field" type="number" placeholder="e.g. 8000" oninput="setSF('rent',this.value)" value="${f.rent||''}"/></div>
+      <div class="input-group"><label class="input-label">Due Day of Month</label><input class="input-field" type="number" placeholder="e.g. 5" oninput="setSF('dueDay',this.value)" value="${f.dueDay||''}"/><div class="input-note">Rent due on this date each month</div></div>
+      <div class="input-group"><label class="input-label">Security Deposit (BDT)</label><input class="input-field" type="number" placeholder="Optional" oninput="setSF('deposit',this.value)" value="${f.deposit||''}"/></div>
+    </div>
+    <div style="height:1rem"></div>
+    <button class="btn btn-kinetic btn-full" onclick="nextStep()">Continue →</button>`;
+
+  else if(step===3) body=`
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Add Counterparty</h1>
+    <div class="sfc mb-2">
+      <div class="input-group"><label class="input-label">${f.role==='Landlord'?'Tenant':'Landlord'} Name</label><input class="input-field" placeholder="Full name" oninput="setSF('cpName',this.value)" value="${f.cpName||''}"/></div>
+      <div class="input-group"><label class="input-label">Phone or Jomaboi ID</label><input class="input-field" placeholder="01711-234567" oninput="setSF('cpPhone',this.value)" value="${f.cpPhone||''}"/></div>
+    </div>
+    ${f.inviteSent?`<div style="background:var(--tertiary-container);border-radius:1rem;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem">
+        <span style="font-size:1.2rem">✅</span>
+        <div><div style="font-weight:700;font-size:.85rem;color:var(--on-tertiary-container)">Invite Sent!</div><div style="font-size:.7rem;color:var(--on-tertiary-container);opacity:.8;font-family:Manrope,sans-serif">Waiting for ${f.cpName||'counterparty'} to accept</div></div>
+      </div>
+      <button class="btn btn-kinetic btn-full" onclick="nextStep()">Continue →</button>`:
+      `<div style="display:flex;flex-direction:column;gap:.65rem">
+        <button class="btn btn-kinetic btn-full" onclick="sendRentalInvite()">📱 Send Invite via SMS</button>
+        <button class="btn btn-tonal btn-full" onclick="sendRentalInvite()">💬 Send on WhatsApp</button>
+      </div>`}
+    <div style="height:.75rem"></div>
+    <button class="btn btn-ghost btn-full" onclick="nextStep()">Skip for now</button>`;
+
+  else body=`
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Review & Confirm</h1>
+    <div class="asym-card mb-3">
+      <div class="deco"></div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+        <span style="font-size:1.5rem">🏠</span>
+        <div><div style="font-weight:900;font-size:1rem">${f.property||'Unnamed Property'}</div><div style="font-size:.7rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif">${f.address||''}</div></div>
+      </div>
+      <div class="grid-2">
+        ${[['Role',f.role||'Landlord'],['Monthly Rent',`BDT ${fmt(parseInt(f.rent||0))}`],['Due Day',`${f.dueDay||'5'}th`],['Deposit',f.deposit?`BDT ${fmt(parseInt(f.deposit))}`:'None']].map(([k,v])=>`
+          <div><div style="font-size:.6rem;color:rgba(255,255,255,.6);font-family:Manrope,sans-serif;text-transform:uppercase">${k}</div><div style="font-size:.88rem;font-weight:700">${v}</div></div>`).join('')}
+      </div>
+    </div>
+    <button class="btn btn-kinetic btn-full" onclick="createLedger()">🏠 Create Ledger</button>`;
+
+  return`<button class="back-btn" onclick="prevStep()">${step===1?'← Back':'← Back'}</button>${stepHtml}${body}`;
+}
+function setSF(k,v){STATE.setupForm[k]=v;}
+function nextStep(){if(STATE.setupStep<4)STATE.setupStep++;render();}
+function prevStep(){if(STATE.setupStep>1){STATE.setupStep--;render();}else{STATE.rentalScreen='ledger-dashboard';render();}}
+function sendRentalInvite(){STATE.setupForm.inviteSent=true;render();}
+function createLedger(){STATE.rentalScreen='ledger-dashboard';STATE.setupStep=1;STATE.setupForm={};render();}
+
+function renderLedgerOverview(){
+  const l=STATE.activeLedger;
+  if(!l)return'';
+  const totalPaid=l.payments.filter(p=>p.status==='Paid').reduce((a,p)=>a+(p.paid||0),0);
+  const od=l.payments.filter(p=>p.status==='Overdue');
+  return`
+    <button class="back-btn" onclick="rentalNav('ledger-dashboard')">← Back</button>
+    <div class="asym-card mb-3">
+      <div class="deco"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+        <span class="chip" style="background:rgba(255,255,255,.2);color:white">${l.role}</span>
+        <button onclick="rentalNav('summary')" style="background:rgba(255,255,255,.2);border:none;color:white;font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:Manrope,sans-serif">📊 Summary</button>
+      </div>
+      <h1 style="font-size:1.2rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px">${l.property}</h1>
+      <p style="color:rgba(255,255,255,.7);font-size:.72rem;font-family:Manrope,sans-serif;margin-bottom:1.25rem">${l.role==='Landlord'?'Tenant: '+(l.tenant||'?'):'Landlord: '+(l.landlord||'?')}</p>
+      <div style="display:flex;gap:1.25rem">
+        ${[['Rent',`BDT ${fmt(l.rent)}`],['Paid',`BDT ${fmt(totalPaid)}`],['Due',`${l.dueDay}${l.dueDay===1?'st':'th'}`]].map(([k,v])=>`<div><div style="font-size:.6rem;color:rgba(255,255,255,.6);font-family:Manrope,sans-serif;text-transform:uppercase">${k}</div><div style="font-size:.9rem;font-weight:800">${v}</div></div>`).join('')}
+      </div>
+    </div>
+    ${od.length>0?`<div class="alert-banner mb-2">
+      <div style="z-index:1"><div style="font-weight:800;font-size:.88rem;color:var(--on-error-container)">⚠️ ${od.length} Payment${od.length>1?'s':''} Overdue</div><div style="font-size:.68rem;color:var(--on-error-container);opacity:.75;font-family:Manrope,sans-serif">${od.map(p=>p.month).join(', ')}</div></div>
+      <button class="btn btn-sm" style="background:var(--on-error-container);color:var(--surface);z-index:1" onclick="rentalNav('log-payment')">Pay Now</button>
+      <div class="alert-deco"></div>
+    </div>`:''}
+    <div class="sfc mb-2">
+      <div class="sh"><div><div class="sh-label">Payment History</div><div class="sh-title">Monthly Ledger</div></div>
+        <button class="btn btn-primary btn-sm" onclick="rentalNav('log-payment')">+ Log</button></div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr>${['Month','Due','Paid','Date','Status'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+          <tbody>${l.payments.map(p=>`
+            <tr>
+              <td style="font-weight:600">${p.month}</td>
+              <td>${fmt(p.due)}</td>
+              <td style="color:${p.paid?'var(--tertiary)':'var(--outline)'};font-weight:${p.paid?700:400}">${p.paid?fmt(p.paid):'—'}</td>
+              <td class="text-xs">${p.date||'—'}</td>
+              <td>${statusDot(p.status)}<span style="font-size:.72rem;font-weight:700;color:${p.status==='Paid'?'var(--tertiary)':p.status==='Overdue'?'var(--error)':'var(--secondary)'}">${p.status}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="flex-row flex-wrap">
+      <button class="btn btn-primary" style="flex:1" onclick="rentalNav('log-payment')">💳 Log Payment</button>
+      <button class="btn btn-tonal" style="flex:1" onclick="rentalNav('summary')">📊 Summary</button>
+      <button class="btn btn-danger btn-sm" onclick="rentalNav('close-ledger')">Close</button>
+    </div>`;
+}
+
+function renderRentalLogPayment(){
+  const l=STATE.activeLedger;
+  return`
+    <button class="back-btn" onclick="rentalNav('ledger-overview')">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:.25rem">Log Payment</h1>
+    <p class="text-sm mb-3">${l?.property||''}</p>
+    <div class="sfc">
+      <div class="input-group"><label class="input-label">Month</label>
+        <select class="select-field">${['January','February','March','April','May','June','July','August','September','October','November','December'].map(m=>`<option>${m}</option>`).join('')}</select></div>
+      <div class="input-group"><label class="input-label">Amount Paid (BDT)</label><input class="input-field" type="number" value="${l?.rent||''}" placeholder="e.g. 8000"/></div>
+      <div class="input-group"><label class="input-label">Payment Method</label>
+        <select class="select-field">${['Bank Transfer','bKash','Nagad','Cash','Cheque'].map(m=>`<option>${m}</option>`).join('')}</select></div>
+      <div class="input-group"><label class="input-label">Payment Date</label><input class="input-field" type="date" value="${new Date().toISOString().split('T')[0]}"/></div>
+      <div class="input-group"><label class="input-label">Notes</label><textarea class="textarea-field" placeholder="e.g. TXN ref: 78234"></textarea></div>
+      <div class="upload-box" id="r-upload" onclick="toggleRUpload()">
+        <div style="font-size:1.4rem;margin-bottom:3px">📎</div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--outline);font-family:Manrope,sans-serif">Tap to upload receipt (optional)</div>
+      </div>
+      <button class="btn btn-kinetic btn-full" onclick="rentalNav('confirm-payment')">Submit Payment →</button>
+    </div>`;
+}
+function toggleRUpload(){
+  const el=document.getElementById('r-upload');
+  if(el){el.classList.toggle('uploaded');el.innerHTML=el.classList.contains('uploaded')?'<div style="font-size:1.4rem;margin-bottom:3px">✅</div><div style="font-size:.78rem;font-weight:700;color:var(--tertiary);font-family:Manrope,sans-serif">Receipt attached</div>':'<div style="font-size:1.4rem;margin-bottom:3px">📎</div><div style="font-size:.78rem;font-weight:700;color:var(--outline);font-family:Manrope,sans-serif">Tap to upload receipt (optional)</div>';}
+}
+
+function renderRentalConfirm(){
+  const l=STATE.activeLedger;
+  return`
+    <button class="back-btn" onclick="rentalNav('ledger-overview')">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Payment Confirmation</h1>
+    <div class="asym-card kinetic mb-3" style="text-align:center">
+      <div class="deco"></div>
+      <p style="font-size:.68rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif;text-transform:uppercase;margin-bottom:6px">Tenant Paid</p>
+      <h2 style="font-size:2rem;font-weight:900;letter-spacing:-.03em;margin-bottom:4px">BDT ${fmt(l?.rent||8000)}</h2>
+      <p style="font-size:.8rem;color:rgba(255,255,255,.8);font-family:Manrope,sans-serif">via Bank Transfer</p>
+    </div>
+    <div class="sfc mb-3">
+      ${[['Tenant',l?.tenant||'Karim Hossain'],['Property',l?.property||''],['Date',new Date().toLocaleDateString()],['Notes','—']].map(([k,v])=>`
+        <div style="display:flex;justify-content:space-between;padding:.7rem 0;border-bottom:1px solid var(--surface-container)">
+          <span class="text-xs">${k}</span><span style="font-size:.78rem;font-weight:600">${v}</span>
+        </div>`).join('')}
+    </div>
+    <div class="flex-row">
+      <button class="btn btn-success" style="flex:1" onclick="rentalConfirmDone('confirmed')">✓ Confirm</button>
+      <button class="btn btn-danger" style="flex:1" onclick="rentalConfirmDone('rejected')">✗ Reject</button>
+    </div>`;
+}
+function rentalConfirmDone(s){
+  document.getElementById('content').innerHTML=`<div class="success-state fade-in">
+    <div class="success-icon" style="background:${s==='confirmed'?'var(--tertiary-container)':'var(--error-container)'};font-size:2rem">${s==='confirmed'?'✅':'❌'}</div>
+    <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">${s==='confirmed'?'Payment Confirmed!':'Payment Rejected'}</h2>
+    <p class="text-sm" style="margin-bottom:1.5rem">${s==='confirmed'?'Ledger updated. Both parties notified.':'Tenant notified to resubmit.'}</p>
+    <button class="btn btn-primary" onclick="rentalNav('ledger-overview')">← Back to Ledger</button>
+  </div>`;
+}
+
+function renderRentalSummary(){
+  const l=STATE.activeLedger;
+  if(!l)return'';
+  const paid=l.payments.filter(p=>p.status==='Paid');
+  const totalPaid=paid.reduce((a,p)=>a+(p.paid||0),0);
+  const totalDue=l.payments.length*l.rent;
+  return`
+    <button class="back-btn" onclick="rentalNav('ledger-overview')">← Back</button>
+    <div><div class="sh-label">Analytics</div><div class="sh-title mb-2">Payment Summary</div></div>
+    <div class="asym-card kinetic mb-3">
+      <div class="deco"></div>
+      <p style="font-size:.62rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Total Paid</p>
+      <h2 style="font-size:2rem;font-weight:900;letter-spacing:-.03em;margin-bottom:1rem">BDT ${fmt(totalPaid)}</h2>
+      <div style="display:flex;gap:1rem">
+        ${[['Paid Months',paid.length],['Overdue',l.payments.filter(p=>p.status==='Overdue').length]].map(([k,v])=>`<div><div style="font-size:.58rem;color:rgba(255,255,255,.6);font-family:Manrope,sans-serif;text-transform:uppercase">${k}</div><div style="font-size:1.1rem;font-weight:800">${v}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="sfc mb-2">
+      <div style="font-size:.95rem;font-weight:800;margin-bottom:1rem">Payment vs Due</div>
+      <canvas id="rental-chart" height="140"></canvas>
+    </div>
+    <div class="grid-2 mb-3">
+      ${[['Total Due',`BDT ${fmt(totalDue)}`,{color:'var(--secondary)'}],['Total Paid',`BDT ${fmt(totalPaid)}`,{color:'var(--tertiary)'}],['Balance',`BDT ${fmt(Math.abs(totalPaid-totalDue))}`,{color:totalPaid>=totalDue?'var(--tertiary)':'var(--error)'}],['Deposit',`BDT ${fmt(l.deposit||0)}`,{color:'var(--primary)'}]].map(([k,v,s])=>`
+        <div class="sfc" style="text-align:center"><div class="text-label">${k}</div><div style="font-size:1rem;font-weight:900;color:${s.color}">${v}</div></div>`).join('')}
+    </div>
+    <div class="flex-row mb-2">
+      <button class="btn btn-tonal" style="flex:1">📄 Certificate</button>
+      <button class="btn btn-tonal" style="flex:1">⬇️ PDF</button>
+    </div>
+    <button class="btn btn-danger btn-full" onclick="rentalNav('close-ledger')">Close Ledger</button>`;
+}
+function drawRentalChart(){
+  const l=STATE.activeLedger;
+  if(!l)return;
+  const ctx=document.getElementById('rental-chart');
+  if(!ctx)return;
+  new Chart(ctx,{type:'bar',data:{labels:l.payments.map(p=>p.month.slice(0,3)),datasets:[
+    {label:'Due',data:l.payments.map(p=>p.due),backgroundColor:'rgba(223,227,230,0.8)',borderRadius:5,borderSkipped:false},
+    {label:'Paid',data:l.payments.map(p=>p.paid||0),backgroundColor:'rgba(70,71,211,0.7)',borderRadius:5,borderSkipped:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'Manrope',size:9},color:'#747779'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Manrope',size:9},color:'#747779'}}}}});
+}
+
+function renderCloseLedger(){
+  const l=STATE.activeLedger;
+  if(!l)return'';
+  const paidTotal=l.payments.filter(p=>p.status==='Paid').reduce((a,p)=>a+(p.paid||0),0);
+  const last=[...l.payments].reverse().find(p=>p.status==='Paid');
+  const outstanding=l.payments.filter(p=>p.status==='Overdue').length;
+  return`
+    <button class="back-btn" onclick="rentalNav('ledger-overview')">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Close Ledger</h1>
+    ${outstanding>0?`<div class="alert-banner mb-2"><div style="z-index:1"><div style="font-weight:800;font-size:.88rem;color:var(--on-error-container)">⚠️ ${outstanding} Outstanding Payments</div><div style="font-size:.7rem;color:var(--on-error-container);opacity:.8;font-family:Manrope,sans-serif">Resolve before closing or write off</div></div><div class="alert-deco"></div></div>`:''}
+    <div class="sfc mb-2">
+      <div><div class="sh-label">Final Balance</div><div class="sh-title mb-2">Ledger Summary</div></div>
+      ${[['Final Balance',`BDT ${fmt(paidTotal)}`,'var(--primary)'],['Last Payment',last?`${last.date} — BDT ${fmt(last.paid)}`:'N/A','var(--on-surface)'],['Outstanding',outstanding>0?`${outstanding} month(s)`:'None',outstanding>0?'var(--error)':'var(--tertiary)']].map(([k,v,color])=>`
+        <div style="display:flex;justify-content:space-between;padding:.7rem 0;border-bottom:1px solid var(--surface-container)">
+          <span class="text-xs">${k}</span><span style="font-size:.82rem;font-weight:700;color:${color}">${v}</span>
+        </div>`).join('')}
+    </div>
+    <div class="sfc mb-2">
+      <div class="input-group"><label class="input-label">Security Deposit Returned?</label>
+        <select class="select-field"><option>❌ No — Not returned</option><option>✅ Yes — Returned</option><option>⚠️ Partial — Deductions applied</option></select></div>
+    </div>
+    <button class="btn btn-kinetic btn-full" onclick="closeLedgerDone()">🔒 Confirm Close Ledger</button>
+    <div style="height:.65rem"></div>
+    <button class="btn btn-ghost btn-full" onclick="rentalNav('ledger-overview')">Cancel</button>`;
+}
+function closeLedgerDone(){
+  document.getElementById('content').innerHTML=`<div class="success-state fade-in">
+    <div class="success-icon" style="background:var(--hero);font-size:2rem">🎉</div>
+    <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:.5rem">Ledger Closed</h2>
+    <p class="text-sm" style="margin-bottom:1.5rem">PDF certificate sent to both parties.</p>
+    <button class="btn btn-primary" onclick="rentalNav('ledger-dashboard')">← Back to Ledgers</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MEMBER DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+function renderMemberDash(){
+  const myCircles=circles.slice(0,2);
+  const myTx=transactions.filter(t=>t.member==='Rahim Uddin');
+  return`
+    <div style="margin-bottom:1.25rem">
+      <p class="text-xs">April 2026</p>
+      <h1 style="font-size:1.25rem;font-weight:900;letter-spacing:-.02em">Good morning, Rahim 👋</h1>
+    </div>
+    <div class="scroll-row mb-3">
+      ${myCircles.map(c=>`
+        <div class="asym-card" style="min-width:210px;flex-shrink:0;background:${c.gradient}">
+          <div class="deco"></div>
+          <p style="font-size:.62rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Circle Pool</p>
+          <div style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em">BDT ${fmt(c.pot)}</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.8);font-family:Manrope,sans-serif;margin-top:4px">${c.name}</div>
+        </div>`).join('')}
+    </div>
+    <div class="grid-2 mb-2">
+      <div class="sfc" style="text-align:center">
+        <div style="font-size:1.1rem;margin-bottom:3px">💰</div>
+        <div style="font-size:.95rem;font-weight:900;color:var(--primary)">BDT 12K</div>
+        <div class="text-label">Total Saved</div>
+      </div>
+      <div class="sfc" style="text-align:center">
+        <div style="font-size:1.1rem;margin-bottom:3px">⭕</div>
+        <div style="font-size:.95rem;font-weight:900;color:var(--primary)">${myCircles.length}</div>
+        <div class="text-label">My Circles</div>
+      </div>
+    </div>
+    <div class="sfc mb-2">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div style="font-size:.95rem;font-weight:800">Savings Growth</div>
+        <select style="background:var(--surface-low);border:none;border-radius:999px;font-size:.72rem;font-family:Manrope,sans-serif;padding:4px 10px;color:var(--on-surface);outline:none"><option>Last 6 Months</option></select>
+      </div>
+      <canvas id="member-chart" height="140"></canvas>
+    </div>
+    <div class="sfc mb-2">
+      <div><div class="sh-label">Active</div><div class="sh-title mb-2">My Circles</div></div>
+      ${myCircles.map(c=>`
+        <div style="padding:.85rem;background:var(--surface-low);border-radius:1rem;margin-bottom:.75rem">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span style="font-weight:800;font-size:.88rem">🏠 ${c.name}</span>
+            <span class="chip chip-green">Active</span>
+          </div>
+          <div style="display:flex;gap:1.25rem">
+            ${[['My Share',`BDT ${fmt(c.contribution)}/mo`],['Pool',`BDT ${fmt(c.pot)}`],['Cycle',`${c.current_cycle}/${c.total_cycles}`]].map(([k,v])=>`<div><div class="text-label">${k}</div><div style="font-size:.78rem;font-weight:700">${v}</div></div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="sfc">
+      <div style="font-size:.95rem;font-weight:800;margin-bottom:1rem">My Transactions</div>
+      ${myTx.map(t=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--surface-container)">
+          <div style="display:flex;align-items:center;gap:.55rem">
+            <div style="width:32px;height:32px;background:var(--tertiary-container);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.85rem">✅</div>
+            <div><div style="font-size:.8rem;font-weight:700">${t.circle}</div><div class="text-xs">Cycle ${t.id} · ${t.date}</div></div>
+          </div>
+          <span style="font-weight:800;color:var(--primary)">BDT ${fmt(t.amount)}</span>
+        </div>`).join('')}
+    </div>`;
+}
+function drawMemberChart(){
+  const ctx=document.getElementById('member-chart');
+  if(!ctx)return;
+  new Chart(ctx,{type:'bar',data:{labels:savingsLabels,datasets:[{label:'Saved',data:savingsData,backgroundColor:savingsData.map((_,i)=>i===savingsData.length-1?'rgba(70,71,211,0.9)':'rgba(70,71,211,0.3)'),borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'Manrope',size:9},color:'#747779'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Manrope',size:9},color:'#747779'}}}}});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════════════════════════════
+function renderProfile(){
+  const ps=STATE.profileSection;
+  if(ps==='edit') return renderEditAccount();
+  if(ps==='statement') return renderStatement();
+  if(ps==='chat') return renderChat();
+  if(ps==='nominee') return renderNominee();
+
+  const menuItems=[
+    {id:'edit',icon:'✏️',label:'Edit Account Information',desc:'Update name, phone & address'},
+    {id:'statement',icon:'📄',label:'Statement',desc:'View & download savings history'},
+    {id:'chat',icon:'🤖',label:'Chat with Agent',desc:'Get help from Jomaboi AI'},
+    {id:'nominee',icon:'👨‍👩‍👦',label:'Nominee Information',desc:'Add or update your nominee'},
+    {id:'logout',icon:'🚪',label:'Logout',desc:'Sign out of your account',danger:true}
+  ];
+  return`
+    <div class="asym-card kinetic mb-3" style="text-align:center">
+      <div class="deco"></div>
+      <div style="width:68px;height:68px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .85rem;border:3px solid rgba(255,255,255,.3)">R</div>
+      <div style="font-weight:900;font-size:1.1rem">Rahim Uddin</div>
+      <div style="font-size:.72rem;color:rgba(255,255,255,.7);font-family:Manrope,sans-serif;margin-top:2px">rahim@gmail.com · 01711-234567</div>
+      <div style="margin-top:.75rem"><span class="chip ${STATE.role==='admin'?'chip-amber':'chip-primary'}" style="background:rgba(255,255,255,.2);color:white">${STATE.role==='admin'?'⚙️ Admin':'👤 Member'}</span></div>
+    </div>
+    ${menuItems.map(item=>`
+      <div onclick="${item.danger?'doLogout()':'openProfileSection(\''+item.id+'\')'}"
+        style="background:var(--surface-lowest);border-radius:1rem;padding:.9rem 1rem;display:flex;align-items:center;gap:.9rem;cursor:pointer;margin-bottom:.6rem;transition:transform .15s"
+        onmouseenter="this.style.transform='scale(1.01)'" onmouseleave="this.style.transform='scale(1)'">
+        <div style="width:42px;height:42px;background:${item.danger?'rgba(180,19,64,.1)':'rgba(70,71,211,.1)'};border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">${item.icon}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:.85rem;color:${item.danger?'var(--error)':'var(--on-surface)'}">${item.label}</div>
+          <div class="text-xs" style="margin-top:1px">${item.desc}</div>
+        </div>
+        <span style="color:var(--outline-variant);font-size:.9rem">›</span>
+      </div>`).join('')}
+    <p class="text-xs" style="text-align:center;margin-top:1.5rem;letter-spacing:.05em">Jomaboi v5.0 · WhiteDoor Partners · 2026</p>`;
+}
+function openProfileSection(s){STATE.profileSection=s;render();}
+function doLogout(){
+  STATE.profileSection=null;
+  document.getElementById('login-screen').classList.remove('hidden');
+  STATE.screen='dashboard';
+  STATE.role='member';
+}
+
+function renderEditAccount(){
+  return`
+    <button class="back-btn" onclick="closeProfileSection()">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Edit Account</h1>
+    <div class="sfc">
+      <div style="display:flex;justify-content:center;margin-bottom:1.25rem">
+        <div style="width:68px;height:68px;background:var(--kinetic);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:var(--shadow-primary)">R</div>
+      </div>
+      <div class="input-group"><label class="input-label">Full Name</label><input class="input-field" value="Rahim Uddin"/></div>
+      <div class="input-group"><label class="input-label">Phone</label><input class="input-field" value="01711-234567"/></div>
+      <div class="input-group"><label class="input-label">Email</label><input class="input-field" type="email" value="rahim@gmail.com"/></div>
+      <div class="input-group"><label class="input-label">Address</label><input class="input-field" value="Mirpur, Dhaka"/></div>
+      <button class="btn btn-kinetic btn-full" onclick="showSaved()">Save Changes</button>
+    </div>`;
+}
+
+function renderStatement(){
+  return`
+    <button class="back-btn" onclick="closeProfileSection()">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Statement</h1>
+    <div class="grid-2 mb-3">
+      <div class="sfc" style="text-align:center"><div class="text-label">Total Saved</div><div style="font-size:1.3rem;font-weight:900;color:var(--primary)">BDT 12,450</div></div>
+      <div class="sfc" style="text-align:center"><div class="text-label">Cycles</div><div style="font-size:1.3rem;font-weight:900">6</div></div>
+    </div>
+    <div class="sfc mb-3">
+      <table class="data-table">
+        <thead><tr>${['Month','Circle','Paid','Status'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+        <tbody>${[['Oct 2025','Mirpur Samity A','2,000','Paid'],['Nov 2025','Mirpur Samity A','2,000','Paid'],['Dec 2025','Mirpur Samity A','2,000','Paid'],['Jan 2026','Mirpur Samity A','2,000','Paid'],['Feb 2026','Mirpur Samity A','2,000','Paid'],['Mar 2026','Mirpur Samity A','2,000','Paid']].map(([m,c,p,s])=>`
+          <tr><td>${m}</td><td class="text-xs">${c}</td><td style="font-weight:700;color:var(--tertiary)">BDT ${p}</td><td>${statusDot('Paid')}<span class="text-xs" style="color:var(--tertiary);font-weight:700">${s}</span></td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <button class="btn btn-tonal btn-full">⬇️ Download PDF Statement</button>`;
+}
+
+function renderChat(){
+  const log=STATE.chatLog;
+  return`
+    <button class="back-btn" onclick="closeProfileSection()">← Back</button>
+    <h1 style="font-size:1.15rem;font-weight:900;margin-bottom:1rem">Jomaboi AI Assistant</h1>
+    <div id="chat-log" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem;min-height:200px">
+      ${log.map(m=>`
+        <div style="display:flex;justify-content:${m.from==='user'?'flex-end':'flex-start'};align-items:flex-end;gap:8px">
+          ${m.from==='agent'?`<div style="width:28px;height:28px;background:var(--hero);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">🤖</div>`:''}
+          <div style="max-width:78%;padding:10px 14px;border-radius:${m.from==='user'?'18px 18px 4px 18px':'18px 18px 18px 4px'};background:${m.from==='user'?'var(--primary)':'var(--surface-low)'};color:${m.from==='user'?'white':'var(--on-surface)'};font-size:.82rem;line-height:1.5">${m.text}</div>
+        </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:.6rem">
+      <input class="input-field" id="chat-input" placeholder="Ask about your savings..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;border-radius:999px"/>
+      <button onclick="sendChat()" style="width:44px;height:44px;background:var(--kinetic);border:none;border-radius:999px;cursor:pointer;font-size:1.1rem;box-shadow:var(--shadow-primary);flex-shrink:0">→</button>
+    </div>`;
+}
+function sendChat(){
+  const inp=document.getElementById('chat-input');
+  if(!inp||!inp.value.trim())return;
+  const msg=inp.value;
+  STATE.chatLog.push({from:'user',text:msg});
+  const replies=['Your next contribution is BDT 2,000 — due April 1st.','Total saved this year: BDT 12,450. Great progress!','Your payout position is #5. Nasrin receives next (Position #1).','To record a payment, ask your Admin to log it.','Is there anything else I can help with?'];
+  setTimeout(()=>{STATE.chatLog.push({from:'agent',text:replies[Math.floor(Math.random()*replies.length)]});render();},700);
+  render();
+}
+
+function renderNominee(){
+  return`
+    <button class="back-btn" onclick="closeProfileSection()">← Back</button>
+    <h1 style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:1.5rem">Nominee Information</h1>
+    <div style="background:rgba(70,71,211,.08);border-radius:1rem;padding:.85rem 1rem;margin-bottom:1.1rem;font-size:.8rem;color:var(--primary);font-family:Manrope,sans-serif">
+      ℹ️ Your nominee receives your savings balance in case of emergency. Kept private and secure.
+    </div>
+    <div class="sfc">
+      <div class="input-group"><label class="input-label">Full Name</label><input class="input-field" placeholder="e.g. Ayesha Begum"/></div>
+      <div class="input-group"><label class="input-label">Relationship</label>
+        <select class="select-field"><option value="">Select...</option>${['Spouse','Parent','Child','Sibling','Other'].map(r=>`<option>${r}</option>`).join('')}</select></div>
+      <div class="input-group"><label class="input-label">Phone</label><input class="input-field" placeholder="01XXX-XXXXXX"/></div>
+      <div class="input-group"><label class="input-label">NID Number</label><input class="input-field" placeholder="National ID"/></div>
+      <button class="btn btn-kinetic btn-full" onclick="showSaved()">Save Nominee</button>
+    </div>`;
+}
+function closeProfileSection(){STATE.profileSection=null;render();}
+function showSaved(){
+  const c=document.getElementById('content');
+  const saved=document.createElement('div');
+  saved.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--tertiary-container);color:var(--on-tertiary-container);padding:10px 20px;border-radius:999px;font-weight:700;font-size:.82rem;font-family:Manrope,sans-serif;z-index:999;box-shadow:var(--shadow-float)';
+  saved.textContent='✅ Saved successfully!';
+  document.body.appendChild(saved);
+  setTimeout(()=>saved.remove(),2000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+// Show app hidden until login
+document.getElementById('app').style.display='flex';
+</script>
+</body>
+</html>
